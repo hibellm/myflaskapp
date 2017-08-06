@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <!--div class="ui segment blue inverted">
+  <h1>Data Source Dashboard </h1>
+  <div class="float right"> Logged in as  {{session.username}}</div>
+    <a class="btn btn-success" href="/add_datasource"> Add datasource</a>
+  </div-->
+
+  <div class="ui segment blue inverted">
+    <h1>Data Source Dashboard</h1>
+    <div class="meta"><i>Logged in as  {{session.username}}</i></div>
+    <div class="description">
+      A list of Data sources entered in the meta data.
+      Add a new entry, edit an existing entry or delete one.
+    </div><br>
+    <a class="ui button green compact" href="/add_datasource"> Add datasource</a>
+  </div>
+
+
+
+  <table class="table table-striped">
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>datasource</th>
+      <th>Author</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for datasource in datasources %}
+      <tr>
+        <td><a href="datasource/{{datasource.id}}"><i class="ui icon external"></i></a></td>
+        <td>{{datasource.id}}</td>
+        <td>{{datasource.dbshortcode}}</td>
+        <td>{{datasource.author}}</td>
+        <td>{{datasource.create_date}}</td>
+        <td><a href="edit_datasource/{{datasource.id}}" class="ui compact button pull-right">Edit</a></td>
+        <td>
+          <form action="{{url_for('delete_datasource', id=datasource.id)}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="ui compact button red">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

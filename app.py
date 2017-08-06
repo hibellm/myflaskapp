@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 #from data import Articles
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
@@ -33,10 +33,8 @@ def about():
 def articles():
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Get articles
     result = cur.execute("SELECT * FROM articles")
-
     articles = cur.fetchall()
 
     if result > 0:
@@ -52,12 +50,9 @@ def articles():
 def article(id):
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Get article
     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-
     article = cur.fetchone()
-
     return render_template('article.html', article=article)
 
 ######
@@ -66,10 +61,8 @@ def article(id):
 def datasources():
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Get articles
     result = cur.execute("SELECT * FROM datasources")
-
     datasources = cur.fetchall()
 
     if result > 0:
@@ -86,12 +79,9 @@ def datasources():
 def datasource(id):
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Get article
     result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
-
     datasource = cur.fetchone()
-
     return render_template('datasource.html', datasource=datasource)
 
 
@@ -106,7 +96,6 @@ class RegisterForm(Form):
     ])
     confirm = PasswordField('Confirm Password')
 
-
 # User Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -119,13 +108,10 @@ def register():
 
         # Create cursor
         cur = mysql.connection.cursor()
-
         # Execute query
         cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
-
         # Commit to DB
         mysql.connection.commit()
-
         # Close connection
         cur.close()
 
@@ -145,7 +131,6 @@ def login():
 
         # Create cursor
         cur = mysql.connection.cursor()
-
         # Get user by username
         result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
 
@@ -193,33 +178,40 @@ def logout():
     return redirect(url_for('login'))
 
 # Dashboard
-@app.route('/dashboard')
+@app.route('/dashboarda')
 @is_logged_in
-def dashboard():
+def dashboarda():
     # Create cursor
     cur = mysql.connection.cursor()
 
     # Get articles
-#    result = cur.execute("SELECT * FROM articles")
+    result = cur.execute("SELECT * FROM articles")
+    articles = cur.fetchall()
 
-#    articles = cur.fetchall()
+    if result > 0:
+        return render_template('dashboarda.html', articles=articles)
+    else:
+        msg = 'No Articles Found'
+        return render_template('dashboarda.html', msg=msg)
+    # Close connection
+    cur.close()
 
-#    if result > 0:
-#        return render_template('dashboard.html', articles=articles)
-#    else:
-#        msg = 'No Articles Found'
-#        return render_template('dashboard.html', msg=msg)
+# Dashboardd
+@app.route('/dashboardd')
+@is_logged_in
+def dashboardd():
+    # Create cursor
+    cur = mysql.connection.cursor()
 
     # Get datasources
     result = cur.execute("SELECT * FROM datasources")
-
     datasources = cur.fetchall()
 
     if result > 0:
-        return render_template('dashboard.html', datasources=datasources)
+        return render_template('dashboardd.html', datasources=datasources)
     else:
         msg = 'No datasources Found'
-        return render_template('dashboard.html', msg=msg)
+        return render_template('dashboardd.html', msg=msg)
     # Close connection
     cur.close()
 
@@ -239,19 +231,15 @@ def add_article():
 
         # Create Cursor
         cur = mysql.connection.cursor()
-
         # Execute
         cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
-
         # Commit to DB
         mysql.connection.commit()
 
         #Close connection
         cur.close()
-
         flash('Article Created', 'success')
-
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboarda'))
 
     return render_template('add_article.html', form=form)
 
@@ -265,7 +253,6 @@ def edit_article(id):
 
     # Get article by id
     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-
     article = cur.fetchone()
     cur.close()
     # Get form
@@ -286,13 +273,10 @@ def edit_article(id):
         cur.execute ("UPDATE articles SET title=%s, body=%s WHERE id=%s",(title, body, id))
         # Commit to DB
         mysql.connection.commit()
-
         #Close connection
         cur.close()
-
         flash('Article Updated', 'success')
-
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboarda'))
 
     return render_template('edit_article.html', form=form)
 
@@ -303,26 +287,22 @@ def edit_article(id):
 def delete_article(id):
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Execute
     cur.execute("DELETE FROM articles WHERE id = %s", [id])
-
     # Commit to DB
     mysql.connection.commit()
-
     #Close connection
     cur.close()
-
     flash('Article Deleted', 'success')
-
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboarda'))
 
 ########
 # datasource Form Class
 class datasourceForm(Form):
-    dbshortcode = StringField('dbshortcode', [validators.Length(min=1, max=10)])
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
     description = TextAreaField('Description', [validators.Length(min=30)])
-    link = StringField('Link', [validators.Length(min=1, max=100)])
+    hosting     = RadioField('Hosting', choices=[('EU', 'EU'), ('US', 'US')])
+    link        = StringField('Link')
 
 # Add datasource
 @app.route('/add_datasource', methods=['GET', 'POST'])
@@ -332,23 +312,19 @@ def add_datasource():
     if request.method == 'POST' and form.validate():
         dbshortcode = form.dbshortcode.data
         description = form.description.data
+        hosting = form.hosting.data
         link = form.link.data
 
         # Create Cursor
         cur = mysql.connection.cursor()
-
         # Execute
-        cur.execute("INSERT INTO datasources(dbshortcode, description, link, author) VALUES(%s, %s, %s, %s)",(dbshortcode, description, link, session['username']))
-
+        cur.execute("INSERT INTO datasources(dbshortcode, description, hosting, link, author) VALUES(%s, %s, %s, %s, %s)",(dbshortcode, description, hosting, link, session['username']))
         # Commit to DB
         mysql.connection.commit()
-
         #Close connection
         cur.close()
-
-        flash('datasource Created', 'success')
-
-        return redirect(url_for('dashboard'))
+        flash('DataSource ' + dbshortcode +' Created', 'success')
+        return redirect(url_for('dashboardd'))
 
     return render_template('add_datasource.html', form=form)
 
@@ -360,9 +336,8 @@ def edit_datasource(id):
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get article by id
+    # Get datasource by id
     result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
-
     datasource = cur.fetchone()
     cur.close()
     # Get form
@@ -371,27 +346,26 @@ def edit_datasource(id):
     # Populate datasource form fields
     form.dbshortcode.data = datasource['dbshortcode']
     form.description.data = datasource['description']
+    form.hosting.data = datasource['hosting']
     form.link.data = datasource['link']
 
     if request.method == 'POST' and form.validate():
         dbshortcode = request.form['dbshortcode']
         description = request.form['description']
+        hosting = request.form['hosting']
         link = request.form['link']
 
         # Create Cursor
         cur = mysql.connection.cursor()
         app.logger.info(dbshortcode)
         # Execute
-        cur.execute ("UPDATE datasources SET dbshortcode=%s, description=%s, link=%s WHERE id=%s",(dbshortcode, description, link, id))
+        cur.execute ("UPDATE datasources SET dbshortcode=%s, description=%s, hosting=%s, link=%s WHERE id=%s",(dbshortcode, description, hosting, link, id))
         # Commit to DB
         mysql.connection.commit()
-
         #Close connection
         cur.close()
-
-        flash('datasource Updated', 'success')
-
-        return redirect(url_for('dashboard'))
+        flash('DataSource ' + dbshortcode + ' Updated', 'success')
+        return redirect(url_for('dashboardd'))
 
     return render_template('edit_datasource.html', form=form)
 
@@ -401,20 +375,14 @@ def edit_datasource(id):
 def delete_datasource(id):
     # Create cursor
     cur = mysql.connection.cursor()
-
     # Execute
     cur.execute("DELETE FROM datasources WHERE id = %s", [id])
-
     # Commit to DB
     mysql.connection.commit()
-
     #Close connection
     cur.close()
-
-    flash('datasource Deleted', 'success')
-
-    return redirect(url_for('dashboard'))
-
+    flash('DataSource Deleted', 'success')
+    return redirect(url_for('dashboardd'))
 
 
 if __name__ == '__main__':
