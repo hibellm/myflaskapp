@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>{{vendor.title}}</h1>
+  <small>Written by {{vendor.author}} on {{vendor.create_date}}</small>
+  <hr>
+  <div>
+    {{vendor.body | safe}}
+  </div>
+{% endblock %}

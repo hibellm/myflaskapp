@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
-#from data import Articles
+#from data import Vendors
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, validators
 from passlib.hash import sha256_crypt
@@ -16,8 +16,6 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
-#Articles = Articles()
-
 # Index
 @app.route('/')
 def index():
@@ -28,32 +26,32 @@ def index():
 def about():
     return render_template('about.html')
 
-# Articles
-@app.route('/articles')
-def articles():
+# Vendors
+@app.route('/vendors')
+def vendors():
     # Create cursor
     cur = mysql.connection.cursor()
-    # Get articles
-    result = cur.execute("SELECT * FROM articles")
-    articles = cur.fetchall()
+    # Get vendors
+    result = cur.execute("SELECT * FROM vendors")
+    vendors = cur.fetchall()
 
     if result > 0:
-        return render_template('articles.html', articles=articles)
+        return render_template('vendors.html', vendors=vendors)
     else:
-        msg = 'No Articles Found'
-        return render_template('articles.html', msg=msg)
+        msg = 'No Vendors Found'
+        return render_template('vendors.html', msg=msg)
     # Close connection
     cur.close()
 
-#Single Article
-@app.route('/article/<string:id>/')
-def article(id):
+#Single Vendor
+@app.route('/vendor/<string:id>/')
+def vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
-    # Get article
-    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-    article = cur.fetchone()
-    return render_template('article.html', article=article)
+    # Get vendor
+    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
+    vendor = cur.fetchone()
+    return render_template('vendor.html', vendor=vendor)
 
 ######
 # datasources
@@ -61,7 +59,7 @@ def article(id):
 def datasources():
     # Create cursor
     cur = mysql.connection.cursor()
-    # Get articles
+    # Get datasources
     result = cur.execute("SELECT * FROM datasources")
     datasources = cur.fetchall()
 
@@ -79,7 +77,7 @@ def datasources():
 def datasource(id):
     # Create cursor
     cur = mysql.connection.cursor()
-    # Get article
+    # Get vendor
     result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
     datasource = cur.fetchone()
     return render_template('datasource.html', datasource=datasource)
@@ -146,7 +144,7 @@ def login():
                 session['username'] = username
 
                 flash('You are now logged in', 'success')
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('about'))
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)
@@ -178,21 +176,21 @@ def logout():
     return redirect(url_for('login'))
 
 # Dashboard
-@app.route('/dashboarda')
+@app.route('/dashboardv')
 @is_logged_in
-def dashboarda():
+def dashboardv():
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get articles
-    result = cur.execute("SELECT * FROM articles")
-    articles = cur.fetchall()
+    # Get vendors
+    result = cur.execute("SELECT * FROM vendors")
+    vendors = cur.fetchall()
 
     if result > 0:
-        return render_template('dashboarda.html', articles=articles)
+        return render_template('dashboardv.html', vendors=vendors)
     else:
-        msg = 'No Articles Found'
-        return render_template('dashboarda.html', msg=msg)
+        msg = 'No Vendors Found'
+        return render_template('dashboardv.html', msg=msg)
     # Close connection
     cur.close()
 
@@ -215,16 +213,16 @@ def dashboardd():
     # Close connection
     cur.close()
 
-# Article Form Class
-class ArticleForm(Form):
+# Vendor Form Class
+class VendorForm(Form):
     title = StringField('Title', [validators.Length(min=1, max=200)])
     body = TextAreaField('Body', [validators.Length(min=30)])
 
-# Add Article
-@app.route('/add_article', methods=['GET', 'POST'])
+# Add Vendor
+@app.route('/add_vendor', methods=['GET', 'POST'])
 @is_logged_in
-def add_article():
-    form = ArticleForm(request.form)
+def add_vendor():
+    form = VendorForm(request.form)
     if request.method == 'POST' and form.validate():
         title = form.title.data
         body = form.body.data
@@ -232,35 +230,35 @@ def add_article():
         # Create Cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("INSERT INTO articles(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
+        cur.execute("INSERT INTO vendors(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
         # Commit to DB
         mysql.connection.commit()
 
         #Close connection
         cur.close()
-        flash('Article Created', 'success')
-        return redirect(url_for('dashboarda'))
+        flash('Vendor Created', 'success')
+        return redirect(url_for('dashboardv'))
 
-    return render_template('add_article.html', form=form)
+    return render_template('add_vendor.html', form=form)
 
 
-# Edit Article
-@app.route('/edit_article/<string:id>', methods=['GET', 'POST'])
+# Edit Vendor
+@app.route('/edit_vendor/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
-def edit_article(id):
+def edit_vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get article by id
-    result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-    article = cur.fetchone()
+    # Get vendor by id
+    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
+    vendor = cur.fetchone()
     cur.close()
     # Get form
-    form = ArticleForm(request.form)
+    form = VendorForm(request.form)
 
-    # Populate article form fields
-    form.title.data = article['title']
-    form.body.data = article['body']
+    # Populate vendor form fields
+    form.title.data = vendor['title']
+    form.body.data = vendor['body']
 
     if request.method == 'POST' and form.validate():
         title = request.form['title']
@@ -270,31 +268,31 @@ def edit_article(id):
         cur = mysql.connection.cursor()
         app.logger.info(title)
         # Execute
-        cur.execute ("UPDATE articles SET title=%s, body=%s WHERE id=%s",(title, body, id))
+        cur.execute ("UPDATE vendors SET title=%s, body=%s WHERE id=%s",(title, body, id))
         # Commit to DB
         mysql.connection.commit()
         #Close connection
         cur.close()
-        flash('Article Updated', 'success')
-        return redirect(url_for('dashboarda'))
+        flash('Vendor Updated', 'success')
+        return redirect(url_for('dashboardv'))
 
-    return render_template('edit_article.html', form=form)
+    return render_template('edit_vendor.html', form=form)
 
 
-# Delete Article
-@app.route('/delete_article/<string:id>', methods=['POST'])
+# Delete Vendor
+@app.route('/delete_vendor/<string:id>', methods=['POST'])
 @is_logged_in
-def delete_article(id):
+def delete_vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Execute
-    cur.execute("DELETE FROM articles WHERE id = %s", [id])
+    cur.execute("DELETE FROM vendors WHERE id = %s", [id])
     # Commit to DB
     mysql.connection.commit()
     #Close connection
     cur.close()
-    flash('Article Deleted', 'success')
-    return redirect(url_for('dashboarda'))
+    flash('Vendor Deleted', 'success')
+    return redirect(url_for('dashboardv'))
 
 ########
 # datasource Form Class
