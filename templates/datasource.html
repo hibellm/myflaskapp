@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Data source details</h1><hr>
+  <h1>{{datasource.dbshortcode}}</h1>
+  <small>Written by {{datasource.author}} on {{datasource.create_date}}</small>
+  <hr>
+  <div>
+    {{datasource.description | safe}}
+  </div>
+  <div>
+    {{datasource.link | safe}}
+  </div>
+{% endblock %}

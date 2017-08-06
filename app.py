@@ -23,12 +23,10 @@ mysql = MySQL(app)
 def index():
     return render_template('home.html')
 
-
 # About
 @app.route('/about')
 def about():
     return render_template('about.html')
-
 
 # Articles
 @app.route('/articles')
@@ -49,7 +47,6 @@ def articles():
     # Close connection
     cur.close()
 
-
 #Single Article
 @app.route('/article/<string:id>/')
 def article(id):
@@ -62,6 +59,40 @@ def article(id):
     article = cur.fetchone()
 
     return render_template('article.html', article=article)
+
+######
+# datasources
+@app.route('/datasources')
+def datasources():
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get articles
+    result = cur.execute("SELECT * FROM datasources")
+
+    datasources = cur.fetchall()
+
+    if result > 0:
+        return render_template('datasources.html', datasources=datasources)
+    else:
+        msg = 'No datasources Found'
+        return render_template('datasources.html', msg=msg)
+    # Close connection
+    cur.close()
+
+
+#Single datasource
+@app.route('/datasource/<string:id>/')
+def datasource(id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get article
+    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
+
+    datasource = cur.fetchone()
+
+    return render_template('datasource.html', datasource=datasource)
 
 
 # Register Form Class
@@ -169,14 +200,25 @@ def dashboard():
     cur = mysql.connection.cursor()
 
     # Get articles
-    result = cur.execute("SELECT * FROM articles")
+#    result = cur.execute("SELECT * FROM articles")
 
-    articles = cur.fetchall()
+#    articles = cur.fetchall()
+
+#    if result > 0:
+#        return render_template('dashboard.html', articles=articles)
+#    else:
+#        msg = 'No Articles Found'
+#        return render_template('dashboard.html', msg=msg)
+
+    # Get datasources
+    result = cur.execute("SELECT * FROM datasources")
+
+    datasources = cur.fetchall()
 
     if result > 0:
-        return render_template('dashboard.html', articles=articles)
+        return render_template('dashboard.html', datasources=datasources)
     else:
-        msg = 'No Articles Found'
+        msg = 'No datasources Found'
         return render_template('dashboard.html', msg=msg)
     # Close connection
     cur.close()
@@ -254,6 +296,7 @@ def edit_article(id):
 
     return render_template('edit_article.html', form=form)
 
+
 # Delete Article
 @app.route('/delete_article/<string:id>', methods=['POST'])
 @is_logged_in
@@ -273,6 +316,106 @@ def delete_article(id):
     flash('Article Deleted', 'success')
 
     return redirect(url_for('dashboard'))
+
+########
+# datasource Form Class
+class datasourceForm(Form):
+    dbshortcode = StringField('dbshortcode', [validators.Length(min=1, max=10)])
+    description = TextAreaField('Description', [validators.Length(min=30)])
+    link = StringField('Link', [validators.Length(min=1, max=100)])
+
+# Add datasource
+@app.route('/add_datasource', methods=['GET', 'POST'])
+@is_logged_in
+def add_datasource():
+    form = datasourceForm(request.form)
+    if request.method == 'POST' and form.validate():
+        dbshortcode = form.dbshortcode.data
+        description = form.description.data
+        link = form.link.data
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+
+        # Execute
+        cur.execute("INSERT INTO datasources(dbshortcode, description, link, author) VALUES(%s, %s, %s, %s)",(dbshortcode, description, link, session['username']))
+
+        # Commit to DB
+        mysql.connection.commit()
+
+        #Close connection
+        cur.close()
+
+        flash('datasource Created', 'success')
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_datasource.html', form=form)
+
+
+# Edit datasource
+@app.route('/edit_datasource/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
+def edit_datasource(id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get article by id
+    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
+
+    datasource = cur.fetchone()
+    cur.close()
+    # Get form
+    form = datasourceForm(request.form)
+
+    # Populate datasource form fields
+    form.dbshortcode.data = datasource['dbshortcode']
+    form.description.data = datasource['description']
+    form.link.data = datasource['link']
+
+    if request.method == 'POST' and form.validate():
+        dbshortcode = request.form['dbshortcode']
+        description = request.form['description']
+        link = request.form['link']
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+        app.logger.info(dbshortcode)
+        # Execute
+        cur.execute ("UPDATE datasources SET dbshortcode=%s, description=%s, link=%s WHERE id=%s",(dbshortcode, description, link, id))
+        # Commit to DB
+        mysql.connection.commit()
+
+        #Close connection
+        cur.close()
+
+        flash('datasource Updated', 'success')
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_datasource.html', form=form)
+
+# Delete datasource
+@app.route('/delete_datasource/<string:id>', methods=['POST'])
+@is_logged_in
+def delete_datasource(id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Execute
+    cur.execute("DELETE FROM datasources WHERE id = %s", [id])
+
+    # Commit to DB
+    mysql.connection.commit()
+
+    #Close connection
+    cur.close()
+
+    flash('datasource Deleted', 'success')
+
+    return redirect(url_for('dashboard'))
+
+
 
 if __name__ == '__main__':
     app.secret_key='secret123'

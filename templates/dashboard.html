@@ -29,4 +29,33 @@
       </tr>
     {% endfor %}
   </table>
+
+  <a class="btn btn-success" href="/add_datasource"> Add datasource</a>
+  <hr>
+  <table class="table table-striped">
+    <tr>
+      <th>ID</th>
+      <th>datasource</th>
+      <th>Author</th>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+    </tr>
+    {% for datasource in datasources %}
+      <tr>
+        <td>{{datasource.id}}</td>
+        <td>{{datasource.dbshortcode}}</td>
+        <td>{{datasource.author}}</td>
+        <td>{{datasource.create_date}}</td>
+        <td><a href="edit_datasource/{{datasource.id}}" class="btn btn-default pull-right">Edit</a></td>
+        <td>
+          <form action="{{url_for('delete_datasource', id=datasource.id)}}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger">
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
 {% endblock %}
