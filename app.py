@@ -4,6 +4,7 @@ from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
+from datetime import datetime, date, time
 
 app = Flask(__name__)
 
@@ -182,7 +183,7 @@ def dashboardv():
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get vendors
+    # Get vendors - need to merge the list of vendors with the list of RU assigned
     result = cur.execute("SELECT * FROM vendors")
     vendors = cur.fetchall()
 
@@ -306,17 +307,24 @@ def assign_vendor():
     form = assignvendorForm(request.form)
     if request.method == 'POST' and form.validate():
         dbshortcode = form.dbshortcode.data
+        agree       = form.agree.data
+        dttime      = datetime.now()
 
+    # Check if agree ticked
+    if agree == 1:
         # Create Cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("INSERT INTO run_registry(userid, datasource ) VALUES(%s, %s)",(session['username'],dbshortcode))
+        cur.execute("INSERT INTO ru_registry(userid,dbshortcode,requestdate,request) VALUES(%s,%s,%s,%s)",(session['username'],dbshortcode,dttime,agree))
         # Commit to DB
         mysql.connection.commit()
         #Close connection
         cur.close()
-        flash('DataSource ' + dbshortcode +' Access granted', 'success')
-        return redirect(url_for('dashboardd'))
+        flash('DataSource ' + dbshortcode +' Access requested', 'success')
+        return redirect(url_for('vendors'))
+    else:
+        flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
+        return redirect(url_for('vendors'))
 
     return render_template('assign_datasource.html', form=form)
 
