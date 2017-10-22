@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 #from data import Vendors
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
@@ -293,6 +293,33 @@ def delete_vendor(id):
     cur.close()
     flash('Vendor Deleted', 'success')
     return redirect(url_for('dashboardv'))
+
+# datasource Form Class
+class assignvendorForm(Form):
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
+    agree       = BooleanField('I agree.', )
+
+# Assign a vendor
+@app.route('/assign_vendor', methods=['GET', 'POST'])
+@is_logged_in
+def assign_vendor():
+    form = assignvendorForm(request.form)
+    if request.method == 'POST' and form.validate():
+        dbshortcode = form.dbshortcode.data
+
+        # Create Cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("INSERT INTO run_registry(userid, datasource ) VALUES(%s, %s)",(session['username'],dbshortcode))
+        # Commit to DB
+        mysql.connection.commit()
+        #Close connection
+        cur.close()
+        flash('DataSource ' + dbshortcode +' Access granted', 'success')
+        return redirect(url_for('dashboardd'))
+
+    return render_template('assign_datasource.html', form=form)
+
 
 ########
 # datasource Form Class
