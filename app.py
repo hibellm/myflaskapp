@@ -27,6 +27,37 @@ def index():
 def about():
     return render_template('about.html')
 
+# ROLE SELECTOR FORM
+class RoleForm(Form):
+    selrole = StringField('selrole')
+
+# Roles
+@app.route('/roles', methods=["GET","POST"])
+def roles():
+    form = RoleForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        selrole = form.selrole.data
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get roles
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles")
+    roles = cur.fetchall()
+    # Get Roles for Dropdown
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles group by rolename")
+    rolesdd = cur.fetchall()
+
+    if result > 0:
+        return render_template('roles.html', roles=roles, rolesdd=rolesdd, form=form)
+    else:
+        msg = 'No Data/Roles Found'
+        return render_template('roles.html', msg=msg)
+    # Close connection
+    cur.close()
+
+
+
 # Vendors
 @app.route('/vendors')
 def vendors():
@@ -50,7 +81,7 @@ def vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Get vendor
-    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
     vendor = cur.fetchone()
     return render_template('vendor.html', vendor=vendor)
 
