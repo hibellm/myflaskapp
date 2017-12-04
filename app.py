@@ -81,7 +81,7 @@ def vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Get vendor
-    result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles WHERE roleaccessid = %s", [id])
     vendor = cur.fetchone()
     return render_template('vendor.html', vendor=vendor)
 
