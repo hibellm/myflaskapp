@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+<!-- {% extends 'layout.html' %} -->
 
 {% block body %}
   <h1>Data Sources Read & understands</h1>
@@ -22,11 +22,11 @@
       <th></th>
     </tr>
     {% for vendor in vendors %}
-      {% if session.logged_in %}
+      <!-- {% if session.logged_in %}
       <tr class="">
-      {% else %}
+      {% else %} -->
       <tr class="active">
-      {% endif %}
+      <!-- {% endif %} -->
         <td><a href="vendor/{{vendor.id}}"><i class="ui icon external"></i></a></td>
         <td>{{vendor.id}}</td>
         <td>{{vendor.title}}</td>

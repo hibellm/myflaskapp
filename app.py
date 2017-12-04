@@ -2,9 +2,13 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 #from data import Vendors
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
+<<<<<<< HEAD
 from wtforms.validators import DataRequired
+=======
+>>>>>>> master
 from passlib.hash import sha256_crypt
 from functools import wraps
+from datetime import datetime, date, time
 
 app = Flask(__name__)
 
@@ -26,6 +30,37 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+# ROLE SELECTOR FORM
+class RoleForm(Form):
+    selrole = StringField('selrole')
+
+# Roles
+@app.route('/roles', methods=["GET","POST"])
+def roles():
+    form = RoleForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        selrole = form.selrole.data
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get roles
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles")
+    roles = cur.fetchall()
+    # Get Roles for Dropdown
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles group by rolename")
+    rolesdd = cur.fetchall()
+
+    if result > 0:
+        return render_template('roles.html', roles=roles, rolesdd=rolesdd, form=form)
+    else:
+        msg = 'No Data/Roles Found'
+        return render_template('roles.html', msg=msg)
+    # Close connection
+    cur.close()
+
+
 
 # Vendors
 @app.route('/vendors')
@@ -50,7 +85,7 @@ def vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Get vendor
-    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
     vendor = cur.fetchone()
     return render_template('vendor.html', vendor=vendor)
 
@@ -183,7 +218,7 @@ def dashboardv():
     # Create cursor
     cur = mysql.connection.cursor()
 
-    # Get vendors
+    # Get vendors - need to merge the list of vendors with the list of RU assigned
     result = cur.execute("SELECT * FROM vendors")
     vendors = cur.fetchall()
 
@@ -258,11 +293,51 @@ def delete_datasource(id):
     flash('DataSource Deleted', 'success')
     return redirect(url_for('dashboardd'))
 
+<<<<<<< HEAD
 
 # MY RU BITS
 # RU Data source List
 # rudatasource Form Class
 class rudatasourceForm(Form):
+=======
+# datasource Form Class
+class assignvendorForm(Form):
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
+    agree       = BooleanField('I agree.', )
+
+# Assign a vendor
+@app.route('/assign_vendor', methods=['GET', 'POST'])
+@is_logged_in
+def assign_vendor():
+    form = assignvendorForm(request.form)
+    if request.method == 'POST' and form.validate():
+        dbshortcode = form.dbshortcode.data
+        agree       = form.agree.data
+        dttime      = datetime.now()
+
+    # Check if agree ticked
+    if agree == 1:
+        # Create Cursor
+        cur = mysql.connection.cursor()
+        # Execute
+        cur.execute("INSERT INTO ru_registry(userid,dbshortcode,requestdate,request) VALUES(%s,%s,%s,%s)",(session['username'],dbshortcode,dttime,agree))
+        # Commit to DB
+        mysql.connection.commit()
+        #Close connection
+        cur.close()
+        flash('DataSource ' + dbshortcode +' Access requested', 'success')
+        return redirect(url_for('vendors'))
+    else:
+        flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
+        return redirect(url_for('vendors'))
+
+    return render_template('assign_datasource.html', form=form)
+
+
+########
+# datasource Form Class
+class datasourceForm(Form):
+>>>>>>> master
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
     agree       = BooleanField('I agree.', )
 
