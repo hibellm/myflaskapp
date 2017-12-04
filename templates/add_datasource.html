@@ -1,7 +1,17 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Add Data Source</h1>
+<div class="ui segment green inverted">
+  <h1>Data Source R&U Dashboard</h1>
+  <div class="meta"><i>Logged in as  {{session.username}}</i></div>
+  <div class="description">
+    A list of Vendors entered in the meta data.
+    Add a new entry, edit an existing entry or delete one.
+  </div><br>
+  <a class="ui button green compact" href="/add_vendor"> Add Vendor</a>
+</div>
+
+  <h1>List of Data Source</h1>
   {% from "includes/_formhelpers.html" import render_field %}
   <form method="POST" action="" class="ui mini form">
     <div class="form-group">{{ render_field(form.dbshortcode, class_="form-control") }}</div>
@@ -10,9 +20,10 @@
                             <span>{{ subfield }} {{ subfield.label }}</span>
                             {% endfor %}
     </div>
+    <div class="form-group">{{ render_field(form.agree, class_="form-control") }}</div>
     <div class="form-group">{{ render_field(form.link, class_="form-control") }}</div>
     <br>
     <p><input class="ui button green" type="submit" value="Submit">
   </form>
-  
+
 {% endblock %}

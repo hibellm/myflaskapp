@@ -2,11 +2,27 @@
 
 {% block body %}
   <div class="jumbotron text-center">
+<<<<<<< HEAD
+    <h1>Test of a REDIS app</h1>
+    <p class="lead">This application is built on the Python Flask framework</p>
+=======
     <h1>Welcome To FlaskApp</h1>
     <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
     {% if session.logged_in == NULL %}
       <a href="/register" class="btn btn-primary btn-lg">Register</a>
       <a href="/login" class="btn btn-success btn-lg"><i class="ui icon sign in"></i>Login</a>
     {% endif %}
+>>>>>>> master
   </div>
+
+  <table class="ui table basic">
+    <th>
+      <td>Result from Redis</td>
+    </th>
+    <tr>
+      <td>{{x}}</td>
+    </tr>
+  </table>
+
+
 {% endblock %}

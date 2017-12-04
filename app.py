@@ -2,6 +2,10 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 #from data import Vendors
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
+<<<<<<< HEAD
+from wtforms.validators import DataRequired
+=======
+>>>>>>> master
 from passlib.hash import sha256_crypt
 from functools import wraps
 from datetime import datetime, date, time
@@ -274,58 +278,28 @@ def add_vendor():
     return render_template('add_vendor.html', form=form)
 
 
-# Edit Vendor
-@app.route('/edit_vendor/<string:id>', methods=['GET', 'POST'])
+# Delete datasource
+@app.route('/delete_datasource/<string:id>', methods=['POST'])
 @is_logged_in
-def edit_vendor(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Get vendor by id
-    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
-    vendor = cur.fetchone()
-    cur.close()
-    # Get form
-    form = VendorForm(request.form)
-
-    # Populate vendor form fields
-    form.title.data = vendor['title']
-    form.body.data = vendor['body']
-
-    if request.method == 'POST' and form.validate():
-        title = request.form['title']
-        body = request.form['body']
-
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        app.logger.info(title)
-        # Execute
-        cur.execute ("UPDATE vendors SET title=%s, body=%s WHERE id=%s",(title, body, id))
-        # Commit to DB
-        mysql.connection.commit()
-        #Close connection
-        cur.close()
-        flash('Vendor Updated', 'success')
-        return redirect(url_for('dashboardv'))
-
-    return render_template('edit_vendor.html', form=form)
-
-
-# Delete Vendor
-@app.route('/delete_vendor/<string:id>', methods=['POST'])
-@is_logged_in
-def delete_vendor(id):
+def delete_datasource(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Execute
-    cur.execute("DELETE FROM vendors WHERE id = %s", [id])
+    cur.execute("DELETE FROM datasources WHERE id = %s", [id])
     # Commit to DB
     mysql.connection.commit()
     #Close connection
     cur.close()
-    flash('Vendor Deleted', 'success')
-    return redirect(url_for('dashboardv'))
+    flash('DataSource Deleted', 'success')
+    return redirect(url_for('dashboardd'))
 
+<<<<<<< HEAD
+
+# MY RU BITS
+# RU Data source List
+# rudatasource Form Class
+class rudatasourceForm(Form):
+=======
 # datasource Form Class
 class assignvendorForm(Form):
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
@@ -363,90 +337,48 @@ def assign_vendor():
 ########
 # datasource Form Class
 class datasourceForm(Form):
+>>>>>>> master
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
-    description = TextAreaField('Description', [validators.Length(min=30)])
-    hosting     = RadioField('Hosting', choices=[('EU', 'EU'), ('US', 'US')])
-    link        = StringField('Link')
+    agree       = BooleanField('I agree.', )
 
-# Add datasource
-@app.route('/add_datasource', methods=['GET', 'POST'])
+
+
+
+
+
+
+
+@app.route('/ru_datasource', methods=['GET', 'POST'])
 @is_logged_in
-def add_datasource():
-    form = datasourceForm(request.form)
+def ru_datasource():
+###
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get vendor by id
+    result = cur.execute("SELECT * FROM vendors")
+    vendor = cur.fetchall()
+    cur.close()
+###
+    form = rudatasourceForm(request.form)
     if request.method == 'POST' and form.validate():
         dbshortcode = form.dbshortcode.data
-        description = form.description.data
-        hosting = form.hosting.data
-        link = form.link.data
+        agree       = form.agree.data
 
         # Create Cursor
         cur = mysql.connection.cursor()
         # Execute
-        cur.execute("INSERT INTO datasources(dbshortcode, description, hosting, link, author) VALUES(%s, %s, %s, %s, %s)",(dbshortcode, description, hosting, link, session['username']))
+        cur.execute("INSERT INTO rudatasources(dbshortcode, author, agree) VALUES(%s, %s, %s)",(dbshortcode, session['username'], agree))
         # Commit to DB
         mysql.connection.commit()
-        #Close connection
+        # Close connection
         cur.close()
-        flash('DataSource ' + dbshortcode +' Created', 'success')
-        return redirect(url_for('dashboardd'))
+        flash('DataSource ' + dbshortcode +' Access Request Created', 'success')
+        return redirect(url_for('ru_datasource'))
 
-    return render_template('add_datasource.html', form=form)
+    return render_template('ru_datasource.html', form=form)
 
 
-# Edit datasource
-@app.route('/edit_datasource/<string:id>', methods=['GET', 'POST'])
-@is_logged_in
-def edit_datasource(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Get datasource by id
-    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
-    datasource = cur.fetchone()
-    cur.close()
-    # Get form
-    form = datasourceForm(request.form)
-
-    # Populate datasource form fields
-    form.dbshortcode.data = datasource['dbshortcode']
-    form.description.data = datasource['description']
-    form.hosting.data = datasource['hosting']
-    form.link.data = datasource['link']
-
-    if request.method == 'POST' and form.validate():
-        dbshortcode = request.form['dbshortcode']
-        description = request.form['description']
-        hosting = request.form['hosting']
-        link = request.form['link']
-
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        app.logger.info(dbshortcode)
-        # Execute
-        cur.execute ("UPDATE datasources SET dbshortcode=%s, description=%s, hosting=%s, link=%s WHERE id=%s",(dbshortcode, description, hosting, link, id))
-        # Commit to DB
-        mysql.connection.commit()
-        #Close connection
-        cur.close()
-        flash('DataSource ' + dbshortcode + ' Updated', 'success')
-        return redirect(url_for('dashboardd'))
-
-    return render_template('edit_datasource.html', form=form)
-
-# Delete datasource
-@app.route('/delete_datasource/<string:id>', methods=['POST'])
-@is_logged_in
-def delete_datasource(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-    # Execute
-    cur.execute("DELETE FROM datasources WHERE id = %s", [id])
-    # Commit to DB
-    mysql.connection.commit()
-    #Close connection
-    cur.close()
-    flash('DataSource Deleted', 'success')
-    return redirect(url_for('dashboardd'))
 
 
 if __name__ == '__main__':
