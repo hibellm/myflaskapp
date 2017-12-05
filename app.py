@@ -2,10 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 #from data import Vendors
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
-<<<<<<< HEAD
 from wtforms.validators import DataRequired
-=======
->>>>>>> master
 from passlib.hash import sha256_crypt
 from functools import wraps
 from datetime import datetime, date, time
@@ -293,13 +290,13 @@ def delete_datasource(id):
     flash('DataSource Deleted', 'success')
     return redirect(url_for('dashboardd'))
 
-<<<<<<< HEAD
 
 # MY RU BITS
 # RU Data source List
 # rudatasource Form Class
 class rudatasourceForm(Form):
-=======
+
+   
 # datasource Form Class
 class assignvendorForm(Form):
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
@@ -337,7 +334,6 @@ def assign_vendor():
 ########
 # datasource Form Class
 class datasourceForm(Form):
->>>>>>> master
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
     agree       = BooleanField('I agree.', )
 
