@@ -2,54 +2,65 @@
 
 {% block body %}
 <div class="ui segment green inverted">
-  <h1>Data Source R&U Dashboard</h1>
-  <div class="meta"><i>Logged in as  {{session.username}}</i></div>
+  <h1>Data Source R&amp;U Dashboard</h1>
   <div class="description">
-    A list of Vendors entered in the meta data.
-    Add a new entry, edit an existing entry or delete one.
+    A list of Data sources available in the Medical Data Hub.
+    <p>View the pdf and click the "Read and Understand" acknowledgment, to get access.</p>
   </div>
 </div>
 
-  <h1>List of Data Sources</h1>
+  <h1>Data source Summary for user : <i class="ui label huge">{{session.username}}</i></h1>
   {% from "includes/_formhelpers.html" import render_field %}
 
   <table class="ui table very basic">
     <tr>
-      <th>View PDF</th>
+      <th>View R&amp;U</th>
       <th>Data Source</th>
-      <th>Author</th>
+      <th>Access</th>
       <th>Date Requested</th>
-      <th></th>
+      <th>Status</th>
     </tr>
-    {% for vendor in vendors %}
+    {% for ds in datasource %}
       <tr>
-        <td><a href="vendor/{{vendor.id}}"><i class="ui icon file pdf outline"></i></a></td>
-        <td>{{vendor.create_date}}</td>
-         <td>
-           <div class="form-group">{{ render_field(form.agree, class_="form-control") }}</div>
-        </td>
-
+        <td><a href="/request_access/{{ds.id}}"><i class="ui icon file pdf outline large red"></i></a></td>
+        <td>{{ds.dbshortcode}}</td>
+        {% if ds.granted==1 %}
+          <td><i class="ui icon green lock large"></i></td>
+          {% else %}
+          <td><i class="ui icon red unlock alternative large"></i></td>
+        {% endif %}
+        <td>{{ds.requestdate}}</td>
+        {% if ds.granted==1 %}
+          <td>Granted on {{ds.grantdate}}</td>
+          {% elif ds.request==1%}
+          <td>Pending</td>
+          {% else %}
+          <td>-</td>
+        {% endif %}
         <td>
-          <form action="{{url_for('delete_vendor', id=vendor.id)}}" method="post">
+                    {#
+          <!-- <form action="{{url_for('delete_vendor', id=ds.id)}}" method="post">
             <input type="hidden" name="_method" value="GRANT">
             <input type="checkbox" tabindex="0" class="hidden"><label>I confirm</label>
-          </form>
+          </form> -->          #}
         <td>
-          <form action="{{url_for('delete_vendor', id=vendor.id)}}" method="post">
+          {#
+          <!-- <form action="{{url_for('delete_vendor', id=ds.id)}}" method="post">
             <input type="hidden" name="_method" value="DELETE">
             <input type="submit" value="Request Access" class="ui button compact green">
-          </form>
+          </form> -->
+          #}
         </td>
       </tr>
     {% endfor %}
   </table>
 
 
-  <form method="POST" action="" class="ui mini form">
+  <!-- <form method="POST" action="" class="ui mini form">
     <div class="form-group inline-field">{{ render_field(form.dbshortcode, class_="form-control") }}</div>
     <div class="form-group">{{ render_field(form.agree, class_="form-control") }}</div>
     <br>
     <p><input class="ui button green" type="submit" value="Submit">
-  </form>
+  </form> -->
 
 {% endblock %}
