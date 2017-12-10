@@ -18,10 +18,6 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
-<<<<<<< HEAD
-dt = datetime.now()
-print(dt)
-=======
 # Index
 @app.route('/')
 def index():
@@ -130,7 +126,6 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
     confirm = PasswordField('Confirm Password')
->>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 
 #LOGIN/REGISTER FUNCTIONS
 # User Register
@@ -256,24 +251,8 @@ def ru_datasource():
     cur.close()
 
 
-<<<<<<< HEAD
 # Log a Request for access
 @app.route('/request_access/<string:id>', methods=['GET', 'POST'])
-=======
-# MY RU BITS
-# RU Data source List
-# rudatasource Form Class
-class rudatasourceForm(Form):
-
-   
-# datasource Form Class
-class assignvendorForm(Form):
-    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
-    agree       = BooleanField('I agree.', )
-
-# Assign a vendor
-@app.route('/assign_vendor', methods=['GET', 'POST'])
->>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 @is_logged_in
 def request_access(id):
     form = rudatasourceForm(request.form)
@@ -301,7 +280,6 @@ def request_access(id):
     return render_template('add_datasource.html', form=form)
 
 
-<<<<<<< HEAD
 # Vendors
 # @app.route('/vendors')
 # def vendors():
@@ -328,13 +306,6 @@ def request_access(id):
 #     result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
 #     vendor = cur.fetchone()
 #     return render_template('vendor.html', vendor=vendor)
-=======
-########
-# datasource Form Class
-class datasourceForm(Form):
-    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
-    agree       = BooleanField('I agree.', )
->>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 
 
 # Register Form Class
