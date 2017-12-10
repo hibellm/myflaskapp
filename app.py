@@ -18,8 +18,119 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
+<<<<<<< HEAD
 dt = datetime.now()
 print(dt)
+=======
+# Index
+@app.route('/')
+def index():
+    return render_template('home.html')
+
+# About
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+# ROLE SELECTOR FORM
+class RoleForm(Form):
+    selrole = StringField('selrole')
+
+# Roles
+@app.route('/roles', methods=["GET","POST"])
+def roles():
+    form = RoleForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        selrole = form.selrole.data
+
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get roles
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles")
+    roles = cur.fetchall()
+    # Get Roles for Dropdown
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles group by rolename")
+    rolesdd = cur.fetchall()
+
+    if result > 0:
+        return render_template('roles.html', roles=roles, rolesdd=rolesdd, form=form)
+    else:
+        msg = 'No Data/Roles Found'
+        return render_template('roles.html', msg=msg)
+    # Close connection
+    cur.close()
+
+
+
+# Vendors
+@app.route('/vendors')
+def vendors():
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get vendors
+    result = cur.execute("SELECT * FROM vendors")
+    vendors = cur.fetchall()
+
+    if result > 0:
+        return render_template('vendors.html', vendors=vendors)
+    else:
+        msg = 'No Vendors Found'
+        return render_template('vendors.html', msg=msg)
+    # Close connection
+    cur.close()
+
+#Single Vendor
+@app.route('/vendor/<string:id>/')
+def vendor(id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get vendor
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles WHERE roleaccessid = %s", [id])
+    vendor = cur.fetchone()
+    return render_template('vendor.html', vendor=vendor)
+
+######
+# datasources
+@app.route('/datasources')
+def datasources():
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get datasources
+    result = cur.execute("SELECT * FROM datasources")
+    datasources = cur.fetchall()
+
+    if result > 0:
+        return render_template('datasources.html', datasources=datasources)
+    else:
+        msg = 'No datasources Found'
+        return render_template('datasources.html', msg=msg)
+    # Close connection
+    cur.close()
+
+
+#Single datasource
+@app.route('/datasource/<string:id>/')
+def datasource(id):
+    # Create cursor
+    cur = mysql.connection.cursor()
+    # Get vendor
+    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
+    datasource = cur.fetchone()
+    return render_template('datasource.html', datasource=datasource)
+
+
+# Register Form Class
+class RegisterForm(Form):
+    name = StringField('Name', [validators.Length(min=1, max=50)])
+    username = StringField('Username', [validators.Length(min=4, max=25)])
+    email = StringField('Email', [validators.Length(min=6, max=50)])
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords do not match')
+    ])
+    confirm = PasswordField('Confirm Password')
+>>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 
 #LOGIN/REGISTER FUNCTIONS
 # User Register
@@ -145,8 +256,24 @@ def ru_datasource():
     cur.close()
 
 
+<<<<<<< HEAD
 # Log a Request for access
 @app.route('/request_access/<string:id>', methods=['GET', 'POST'])
+=======
+# MY RU BITS
+# RU Data source List
+# rudatasource Form Class
+class rudatasourceForm(Form):
+
+   
+# datasource Form Class
+class assignvendorForm(Form):
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
+    agree       = BooleanField('I agree.', )
+
+# Assign a vendor
+@app.route('/assign_vendor', methods=['GET', 'POST'])
+>>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 @is_logged_in
 def request_access(id):
     form = rudatasourceForm(request.form)
@@ -174,6 +301,7 @@ def request_access(id):
     return render_template('add_datasource.html', form=form)
 
 
+<<<<<<< HEAD
 # Vendors
 # @app.route('/vendors')
 # def vendors():
@@ -200,6 +328,13 @@ def request_access(id):
 #     result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
 #     vendor = cur.fetchone()
 #     return render_template('vendor.html', vendor=vendor)
+=======
+########
+# datasource Form Class
+class datasourceForm(Form):
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
+    agree       = BooleanField('I agree.', )
+>>>>>>> 09ebfcea08ff1f4b302038bbcce057428e64cdd6
 
 
 # Register Form Class
