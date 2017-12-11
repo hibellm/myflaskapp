@@ -1,0 +1,49 @@
+2017-12-11 15:15:02,014 - teradata.udaexec - INFO - Initializing UdaExec...
+2017-12-11 15:15:02,014 - teradata.udaexec - INFO - Reading config files: ['/etc/udaexec.ini: Not Found', '/home/users/hibellm/udaexec.ini: Found', '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/udaexec.ini: Not Found']
+2017-12-11 15:15:02,014 - teradata.udaexec - INFO - Found run number file: "/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/.runNumber"
+2017-12-11 15:15:02,014 - teradata.udaexec - INFO - Cleaning up log files older than 90 days.
+2017-12-11 15:15:02,014 - teradata.udaexec - INFO - Removed 0 log files.
+2017-12-11 15:15:37,077 - teradata.udaexec - INFO - Checkpoint file not found: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/RU Flaskapp.checkpoint
+2017-12-11 15:15:37,078 - teradata.udaexec - INFO - No previous checkpoint found, executing from beginning...
+2017-12-11 15:15:37,078 - teradata.udaexec - INFO - Execution Details:
+/********************************************************************************
+ * Application Name: RU Flaskapp
+ *          Version: 1.0
+ *       Run Number: 20171211151502-42
+ *             Host: rkaustms02
+ *         Platform: Linux-3.0.101-0.125.TDC.1.R.0-default-x86_64-with-SuSE-11-x86_64
+ *          OS User: hibellm
+ *   Python Version: 3.5.1
+ *  Python Compiler: GCC 4.4.7 20120313 (Red Hat 4.4.7-1)
+ *     Python Build: ('default', 'Jun 15 2016 15:32:45')
+ *  UdaExec Version: 15.10.0.16
+ *     Program Name: app_tdcon.py
+ *      Working Dir: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp
+ *      Git Version: git version 2.10.2
+ *     Git Revision: 195a97f
+ *        Git Dirty: True [ M README.md, M app.py, M app_tdcon.py, M data.py, M listfiles1.txt, M listfiles2.txt, M osscript.py, M td_python.py, M td_python_connection.py, M templates/about.html, M templates/add_datasource.html, M templates/add_vendor.html, M templates/dashboard.html, M templates/dashboardd.html, M templates/dashboardv.html, M templates/datasource.html, M templates/datasources.html, M templates/edit_datasource.html, M templates/edit_vendor.html, M templates/home.html, M templates/includes/_formhelpers.html, M templates/includes/_messages.html, M templates/includes/_navbar.html, M templates/layout.html, M templates/login.html, M templates/register.html, M templates/roles.html, M templates/ru_datasource.html, M templates/shell.html, M templates/tablesort.js, M templates/vendor.html, M templates/vendors.html, M templates/vendors_tdcon.html,?? .runNumber,?? logs/]
+ *          Log Dir: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs
+ *         Log File: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs/RU Flaskapp.20171211151502-42.log
+ *     Config Files: ['/etc/udaexec.ini: Not Found', '/home/users/hibellm/udaexec.ini: Found', '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/udaexec.ini: Not Found']
+ *      Query Bands: ApplicationName=RU Flaskapp;Version=1.0;JobID=20171211151502-42;ClientUser=hibellm;Production=False;udaAppLogFile=/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs/RU Flaskapp.20171211151502-42.log;gitRevision=195a97f;gitDirty=True;UtilityName=PyTd;UtilityVersion=15.10.0.16
+********************************************************************************/
+2017-12-11 15:15:37,080 - teradata.udaexec - INFO - Creating connection: {'method': 'odbc', 'system': 'rochetd', 'username': 'hibellm', 'password': 'XXXXXX'}
+2017-12-11 15:15:37,080 - teradata.tdodbc - INFO - Loading ODBC Library: libodbc.so
+2017-12-11 15:15:37,295 - teradata.udaexec - INFO - Connection successful. Duration: 0.215 seconds. Details: {'method': 'odbc', 'system': 'rochetd', 'username': 'hibellm', 'password': 'XXXXXX'}
+2017-12-11 15:15:37,306 - werkzeug - WARNING -  * Debugger is active!
+2017-12-11 15:15:37,307 - werkzeug - INFO -  * Debugger pin code: 254-427-544
+2017-12-11 15:15:58,364 - teradata.udaexec - INFO - Query Successful. Duration: 0.025 seconds, Rows: 1, Query: INSERT into datahub_hibellm.userlist(userid, username, email, userpw) VALUES(?,?,?,?), Params: ['hibellm','marcusa hibell','Marcus.hibell@roche.com','$5$rounds=535000$dycuuMft3eIQfoG6$CNS7krauhTQy3T3p87x24vgzU3qNhR8eGskPNTaW0m8']
+2017-12-11 15:15:58,366 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:15:58] "POST /register HTTP/1.1" 302 -
+2017-12-11 15:15:58,404 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:15:58] "GET /login HTTP/1.1" 200 -
+2017-12-11 15:16:45,977 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:16:45] "POST /login HTTP/1.1" 400 -
+2017-12-11 15:16:59,450 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:16:59] "GET /about HTTP/1.1" 200 -
+2017-12-11 15:17:03,374 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:17:03] "GET /login HTTP/1.1" 200 -
+2017-12-11 15:17:05,763 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:17:05] "GET /about HTTP/1.1" 200 -
+2017-12-11 15:17:06,694 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:17:06] "GET /register HTTP/1.1" 200 -
+2017-12-11 15:17:16,319 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:17:16] "GET /register HTTP/1.1" 200 -
+2017-12-11 15:37:26,654 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:37:26] "GET /login HTTP/1.1" 200 -
+2017-12-11 15:37:37,263 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:37:37] "POST /login HTTP/1.1" 400 -
+2017-12-11 15:40:39,210 - werkzeug - INFO - 10.112.104.39 - - [11/Dec/2017 15:40:39] "POST /login HTTP/1.1" 400 -
+2017-12-11 15:41:07,422 - werkzeug - INFO -  * Detected change in '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/app_tdcon.py', reloading
+2017-12-11 15:41:07,423 - teradata.tdodbc - WARNING - 1 open connections found on exit, attempting to close...
+2017-12-11 15:41:07,446 - teradata.udaexec - INFO - UdaExec exiting.
