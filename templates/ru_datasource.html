@@ -9,7 +9,7 @@
   </div>
 </div>
 
-  <h1>Data source Summary for user : <i class="ui label huge">{{session.username}}</i></h1>
+  <h1>Data source Summary for user : <i class="ui label huge">{{session.userid}}</i></h1>
   {% from "includes/_formhelpers.html" import render_field %}
 
   <table class="ui table very basic">
@@ -22,35 +22,21 @@
     </tr>
     {% for ds in datasource %}
       <tr>
-        <td><a href="/request_access/{{ds.id}}"><i class="ui icon file pdf outline large red"></i></a></td>
-        <td>{{ds.dbshortcode}}</td>
-        {% if ds.granted==1 %}
-          <td><i class="ui icon green lock large"></i></td>
+        <td><a href="/request_access/{{ds.dbid}}"><i class="ui icon file pdf outline large red"></i></a></td>
+        <td>{{ ds[1]}}</td>
+        {% if ds[9]==1 %}
+          <td><i class="ui icon green unlock large"></i></td>
           {% else %}
-          <td><i class="ui icon red unlock alternative large"></i></td>
+          <td><i class="ui icon red lock alternative large"></i></td>
         {% endif %}
-        <td>{{ds.requestdate}}</td>
-        {% if ds.granted==1 %}
-          <td>Granted on {{ds.grantdate}}</td>
-          {% elif ds.request==1%}
+        <td>{{ds[6]}}</td>
+        {% if ds[9]==1 %}
+          <td>Granted on {{ds[8]}}</td>
+          {% elif ds[7]==1%}
           <td>Pending</td>
           {% else %}
           <td>-</td>
         {% endif %}
-        <td>
-                    {#
-          <!-- <form action="{{url_for('delete_vendor', id=ds.id)}}" method="post">
-            <input type="hidden" name="_method" value="GRANT">
-            <input type="checkbox" tabindex="0" class="hidden"><label>I confirm</label>
-          </form> -->          #}
-        <td>
-          {#
-          <!-- <form action="{{url_for('delete_vendor', id=ds.id)}}" method="post">
-            <input type="hidden" name="_method" value="DELETE">
-            <input type="submit" value="Request Access" class="ui button compact green">
-          </form> -->
-          #}
-        </td>
       </tr>
     {% endfor %}
   </table>

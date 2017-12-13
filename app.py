@@ -251,6 +251,12 @@ def ru_datasource():
     cur.close()
 
 
+# Get vendor
+    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
+    datasource = cur.fetchone()
+
+
+
 # Log a Request for access
 @app.route('/request_access/<string:id>', methods=['GET', 'POST'])
 @is_logged_in

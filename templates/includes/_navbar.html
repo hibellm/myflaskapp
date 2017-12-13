@@ -20,7 +20,7 @@
 
           <ul class="nav navbar-nav navbar-right">
             {% if session.logged_in %}
-              <li><a href="#">Logged-in as: <div class="ui label blue">{{session.username}}</div></a> </li>
+              <li><a href="#">Logged-in as: <div class="ui label blue">{{session.userid}}</div></a> </li>
               <li><a href="/logout"><i class="ui sign out icon"></i>Logout</a></li>
             {% else %}
               <li><a href="/register">Register</a></li>

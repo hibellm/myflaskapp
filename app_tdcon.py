@@ -11,13 +11,13 @@ import teradata
 app = Flask(__name__)
 
 #TERADATA CONNECTION INFOMATION - ALSO USES UDAEXEC.INI FILE IN HOME DIRECTORY
-udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logConsole=True)
-#session = udaExec.connect(method="odbc", system="rochetd",username="$$tdwallet(username)", password="$$tdwallet(pw_tera)");
-session = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
+udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="ERROR",logConsole=True)
+tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
 
 # Index
 @app.route('/')
 def index():
+    print('Website is running....')
     return render_template('home.html')
 
 # About
@@ -49,17 +49,8 @@ def register():
         userpw   = sha256_crypt.encrypt(str(form.userpw.data))
 
         # ENTER THE DATA INTO A USER TABLE
-        for row in session.execute("INSERT into datahub_hibellm.userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+        for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
             print('Entered the user:'+userid+' into the database')
-
-        # # Create cursor
-        # cur = mysql.connection.cursor()
-        # # Execute query
-        # cur.execute("INSERT INTO users(name, email, username, password) VALUES(?,?,?,?)", (name, email, username, password))
-        # # Commit to DB
-        # mysql.connection.commit()
-        # # Close connection
-        # cur.close()
 
         flash('You are now registered and can log in', 'success')
 
@@ -74,31 +65,28 @@ def login():
         userid = request.form['userid']
         password_candidate = request.form['userpw']
 
-        # Create cursor
-        #cur = mysql.connection.cursor()
-        # Get user by username
-        #result = cur.execute("SELECT * FROM users WHERE userid = ?", [userid])
-        for row in session.execute("SELECT * FROM datahub_hibellm.userlist WHERE userid = ?", [userid]):
+        # Get user by userid
+        for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+            print(row)
+            print(row[3])
             result=row
+        # print(dir(result))
 
-        if result > 0:
+        if len(result) > 0:
             # Get stored hash
-            data = row.fetchone()[0]
-            userpw = data['userpw']
+            userpwd = result[3]
 
             # Compare Passwords
-            if sha256_crypt.verify(password_candidate, userpw):
+            if sha256_crypt.verify(password_candidate, userpwd):
                 # Passed
                 session['logged_in'] = True
-                session['userid'] = userid
+                session['userid'] = result[0]
 
                 flash('You are now logged in', 'success')
-                return redirect(url_for('about'))
+                return redirect(url_for('ru_datasource'))
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)
-            # Close connection
-            # cur.close()
         else:
             error = 'UserID not found'
             return render_template('login.html', error=error)
@@ -123,6 +111,83 @@ def logout():
     session.clear()
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
+
+
+# LIST OF RUs
+class rudatasourceForm(Form):
+    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
+    agree       = BooleanField('I agree.', )
+
+# Dashboard of RU
+@app.route('/ru_datasource',methods=['GET', 'POST'])
+@is_logged_in
+def ru_datasource():
+    form = rudatasourceForm(request.form)
+
+
+ # Try this!!!! https://stackoverflow.com/questions/37850181/python-pytd-teradata-query-into-pandas-dataframe
+
+    # Get status list of RU
+    # for row in tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='?') as b on a.dbshortcode=b.dbshortcode;", session['userid']):
+    # for row in tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;"):
+    #     datasource=row
+    #     print(datasource)
+
+    cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
+    datasource= cur.fetchall()
+    # for rowMetaData in cur.description:
+    #      cols.append(rowMetaData[0])
+    #      df.columns = cols
+    #      print(df.columns)
+    # for row in cur:
+    #      datasource=row
+    #      print(datasource)
+
+
+    # Get datasourcelist
+    if len(datasource) > 0:
+        return render_template('ru_datasource.html', datasource=datasource,form=form)
+    else:
+        msg = 'No R&amp;U Found...strange'
+        return render_template('ru_datasource.html', msg=msg ,form=form)
+
+#Request Rand U
+@app.route('/request_access')
+def request_access(id):
+
+    # cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
+    # datasource= cur.fetchall()
+    result = cur.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid = ?", [id])
+    datasource = cur.fetchone()
+    return render_template('request_access.html', datasource=datasource)
+
+# Log a Request for access
+@app.route('/request_access/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
+def logrequest(id):
+    form = rudatasourceForm(request.form)
+    if request.method == 'POST' and form.validate():
+        dbshortcode = form.dbshortcode.data
+        agree       = form.agree.data
+        dttime      = datetime.now()
+
+        print('The value of agree is :'+agree)
+        # Check if agree ticked
+        if agree == 1:
+            print('The user aggreed to datasource :'+ dbshortcode)
+            # cur.execute("INSERT INTO ru_registry(userid,dbshortcode,requestdate,request) VALUES(%s,%s,%s,%s)",(session['username'],dbshortcode,dttime,agree))
+            cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbshortcode,requestdate,request) VALUES(?,?,?,?)",(session['userid'],dbshortcode,dttime,agree))
+            # datasource= cur.fetchall()
+
+            flash('DataSource ' + dbshortcode +' Access requested', 'success')
+            # return redirect(url_for('/request_access/<string:id>'))
+            return redirect(url_for('ru_datasource'))
+        else:
+            flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
+            # return redirect(url_for('/request_access/<string:id>'))
+            return redirect(url_for('/request_access/<string:id>'))
+
+    return render_template('ru_datasource.html', form=form)
 
 
 
