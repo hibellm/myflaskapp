@@ -1,0 +1,56 @@
+2017-12-11 12:02:34,661 - teradata.udaexec - INFO - Initializing UdaExec...
+2017-12-11 12:02:34,661 - teradata.udaexec - INFO - Reading config files: ['/etc/udaexec.ini: Not Found', '/home/users/hibellm/udaexec.ini: Found', '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/udaexec.ini: Not Found']
+2017-12-11 12:02:34,662 - teradata.udaexec - INFO - Found run number file: "/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/.runNumber"
+2017-12-11 12:02:34,662 - teradata.udaexec - INFO - Cleaning up log files older than 90 days.
+2017-12-11 12:02:34,662 - teradata.udaexec - INFO - Removed 0 log files.
+2017-12-11 12:03:09,734 - teradata.udaexec - INFO - Checkpoint file not found: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/HelloWorld.checkpoint
+2017-12-11 12:03:09,735 - teradata.udaexec - INFO - No previous checkpoint found, executing from beginning...
+2017-12-11 12:03:09,735 - teradata.udaexec - INFO - Execution Details:
+/********************************************************************************
+ * Application Name: HelloWorld
+ *          Version: 1.0
+ *       Run Number: 20171211120234-14
+ *             Host: rkaustms02
+ *         Platform: Linux-3.0.101-0.125.TDC.1.R.0-default-x86_64-with-SuSE-11-x86_64
+ *          OS User: hibellm
+ *   Python Version: 3.5.1
+ *  Python Compiler: GCC 4.4.7 20120313 (Red Hat 4.4.7-1)
+ *     Python Build: ('default', 'Jun 15 2016 15:32:45')
+ *  UdaExec Version: 15.10.0.16
+ *     Program Name: td_python.py
+ *      Working Dir: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp
+ *      Git Version: git version 2.10.2
+ *     Git Revision: 195a97f
+ *        Git Dirty: True [ M README.md, M app.py, M app_tdcon.py, M data.py, M listfiles1.txt, M listfiles2.txt, M osscript.py, M td_python.py, M td_python_connection.py, M templates/about.html, M templates/add_datasource.html, M templates/add_vendor.html, M templates/dashboard.html, M templates/dashboardd.html, M templates/dashboardv.html, M templates/datasource.html, M templates/datasources.html, M templates/edit_datasource.html, M templates/edit_vendor.html, M templates/home.html, M templates/includes/_formhelpers.html, M templates/includes/_messages.html, M templates/includes/_navbar.html, M templates/layout.html, M templates/login.html, M templates/register.html, M templates/roles.html, M templates/ru_datasource.html, M templates/shell.html, M templates/tablesort.js, M templates/vendor.html, M templates/vendors.html, M templates/vendors_tdcon.html,?? .runNumber,?? logs/]
+ *          Log Dir: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs
+ *         Log File: /data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs/HelloWorld.20171211120234-14.log
+ *     Config Files: ['/etc/udaexec.ini: Not Found', '/home/users/hibellm/udaexec.ini: Found', '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/udaexec.ini: Not Found']
+ *      Query Bands: ApplicationName=HelloWorld;Version=1.0;JobID=20171211120234-14;ClientUser=hibellm;Production=False;udaAppLogFile=/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/logs/HelloWorld.20171211120234-14.log;gitRevision=195a97f;gitDirty=True;UtilityName=PyTd;UtilityVersion=15.10.0.16
+********************************************************************************/
+2017-12-11 12:03:09,737 - teradata.udaexec - INFO - Creating connection: {'system': 'rochetd', 'method': 'odbc', 'password': 'XXXXXX', 'username': 'hibellm'}
+2017-12-11 12:03:09,737 - teradata.tdodbc - INFO - Loading ODBC Library: libodbc.so
+2017-12-11 12:03:09,920 - teradata.udaexec - INFO - Connection successful. Duration: 0.183 seconds. Details: {'system': 'rochetd', 'method': 'odbc', 'password': 'XXXXXX', 'username': 'hibellm'}
+2017-12-11 12:03:09,937 - teradata.udaexec - INFO - Query Successful. Duration: 0.016 seconds, Rows: 1, Query: INSERT into datahub_hibellm.flasktest VALUES(?,?), Params: ['hibellm','CPRD']
+2017-12-11 12:03:09,938 - teradata.udaexec - ERROR - Query Failed! Duration: 0.001 seconds, Query: INSERT into datahub_hibellm.flasktest VALUES(?,?), Params: 1:['hibellm','mrmagoo','Batman']
+2:['CPRD','ABC','XYZ']
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 579, in executemany
+    "parameters ({}).".format(len(p), numParams))
+teradata.api.InterfaceError: ('PARAMS_MISMATCH', 'The number of supplied parameters (3) does not match the expected number of parameters (2).')
+2017-12-11 12:03:09,940 - teradata.udaexec - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "td_python.py", line 22, in <module>
+    for row in session.executemany("INSERT into datahub_hibellm.flasktest VALUES(?,?)",(userid,dbshortcode)):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 675, in executemany
+    self.internalCursor.executemany(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 747, in executemany
+    self._execute(self.cursor.executemany, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 579, in executemany
+    "parameters ({}).".format(len(p), numParams))
+teradata.api.InterfaceError: ('PARAMS_MISMATCH', 'The number of supplied parameters (3) does not match the expected number of parameters (2).')
+2017-12-11 12:03:09,941 - teradata.tdodbc - WARNING - 1 open connections found on exit, attempting to close...
+2017-12-11 12:03:09,958 - teradata.udaexec - INFO - UdaExec exiting.

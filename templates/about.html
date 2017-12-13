@@ -1,13 +1,17 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<div class="jumbotron text-center">
+  <h1>About the R&amp;U FlaskApp</h1>
+  <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
+  {% if session.logged_in == NULL %}
+    <a href="/register" class="btn btn-primary btn-lg">Register</a>
+    <a href="/login" class="btn btn-success btn-lg">Login</a>
+  {% endif %}
+</div>
   <h1>About the App</h1>
   <p>The app has been created as a front end to the meta data used by the Medcial Data Hub</p>
-  <p>There are currently interfaces for 1 of the 4 meta data tables</p>
-  <div class="ui list">
-    <div class="item"><i class="square outline red icon"></i>Vendor Details</div>
-    <div class="item"><i class="checkmark box green icon"></i>Data Source Details</div>
-    <div class="item"><i class="square outline red icon"></i>Training Details</div>
-    <div class="item"><i class="square outline red icon"></i>Web Events</div>
-  </div>
+  <p>Apply for access to data sources via the data source tab.</p>
+  <p>You must be logged in to access the data sources Read & Unsderstand documnets.</p>
+
 {% endblock %}

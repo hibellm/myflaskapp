@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, redirect, url_for, session, req
 #from data import Vendors
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, RadioField, BooleanField, validators
+from wtforms.validators import DataRequired
 from passlib.hash import sha256_crypt
 from functools import wraps
 from datetime import datetime, date, time
@@ -82,7 +83,7 @@ def vendor(id):
     # Create cursor
     cur = mysql.connection.cursor()
     # Get vendor
-    result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
+    result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles WHERE roleaccessid = %s", [id])
     vendor = cur.fetchone()
     return render_template('vendor.html', vendor=vendor)
 
@@ -127,6 +128,7 @@ class RegisterForm(Form):
     ])
     confirm = PasswordField('Confirm Password')
 
+#LOGIN/REGISTER FUNCTIONS
 # User Register
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -150,7 +152,6 @@ def register():
 
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
-
 
 # User login
 @app.route('/login', methods=['GET', 'POST'])
@@ -208,135 +209,60 @@ def logout():
     flash('You are now logged out', 'success')
     return redirect(url_for('login'))
 
-# Dashboard
-@app.route('/dashboardv')
-@is_logged_in
-def dashboardv():
-    # Create cursor
-    cur = mysql.connection.cursor()
 
-    # Get vendors - need to merge the list of vendors with the list of RU assigned
-    result = cur.execute("SELECT * FROM vendors")
-    vendors = cur.fetchall()
+# STATIC PAGES
 
-    if result > 0:
-        return render_template('dashboardv.html', vendors=vendors)
-    else:
-        msg = 'No Vendors Found'
-        return render_template('dashboardv.html', msg=msg)
-    # Close connection
-    cur.close()
-
-# Dashboardd
-@app.route('/dashboardd')
-@is_logged_in
-def dashboardd():
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Get datasources
-    result = cur.execute("SELECT * FROM datasources")
-    datasources = cur.fetchall()
-
-    if result > 0:
-        return render_template('dashboardd.html', datasources=datasources)
-    else:
-        msg = 'No datasources Found'
-        return render_template('dashboardd.html', msg=msg)
-    # Close connection
-    cur.close()
-
-# Vendor Form Class
-class VendorForm(Form):
-    title = StringField('Title', [validators.Length(min=1, max=200)])
-    body = TextAreaField('Body', [validators.Length(min=30)])
-
-# Add Vendor
-@app.route('/add_vendor', methods=['GET', 'POST'])
-@is_logged_in
-def add_vendor():
-    form = VendorForm(request.form)
-    if request.method == 'POST' and form.validate():
-        title = form.title.data
-        body = form.body.data
-
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        # Execute
-        cur.execute("INSERT INTO vendors(title, body, author) VALUES(%s, %s, %s)",(title, body, session['username']))
-        # Commit to DB
-        mysql.connection.commit()
-
-        #Close connection
-        cur.close()
-        flash('Vendor Created', 'success')
-        return redirect(url_for('dashboardv'))
-
-    return render_template('add_vendor.html', form=form)
+# About
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
-# Edit Vendor
-@app.route('/edit_vendor/<string:id>', methods=['GET', 'POST'])
-@is_logged_in
-def edit_vendor(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-
-    # Get vendor by id
-    result = cur.execute("SELECT * FROM vendors WHERE id = %s", [id])
-    vendor = cur.fetchone()
-    cur.close()
-    # Get form
-    form = VendorForm(request.form)
-
-    # Populate vendor form fields
-    form.title.data = vendor['title']
-    form.body.data = vendor['body']
-
-    if request.method == 'POST' and form.validate():
-        title = request.form['title']
-        body = request.form['body']
-
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        app.logger.info(title)
-        # Execute
-        cur.execute ("UPDATE vendors SET title=%s, body=%s WHERE id=%s",(title, body, id))
-        # Commit to DB
-        mysql.connection.commit()
-        #Close connection
-        cur.close()
-        flash('Vendor Updated', 'success')
-        return redirect(url_for('dashboardv'))
-
-    return render_template('edit_vendor.html', form=form)
-
-
-# Delete Vendor
-@app.route('/delete_vendor/<string:id>', methods=['POST'])
-@is_logged_in
-def delete_vendor(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-    # Execute
-    cur.execute("DELETE FROM vendors WHERE id = %s", [id])
-    # Commit to DB
-    mysql.connection.commit()
-    #Close connection
-    cur.close()
-    flash('Vendor Deleted', 'success')
-    return redirect(url_for('dashboardv'))
-
-# datasource Form Class
-class assignvendorForm(Form):
+# LIST OF RUs
+class rudatasourceForm(Form):
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
     agree       = BooleanField('I agree.', )
 
-# Assign a vendor
-@app.route('/assign_vendor', methods=['GET', 'POST'])
+# Dashboard of RU
+@app.route('/ru_datasource',methods=['GET', 'POST'])
 @is_logged_in
-def assign_vendor():
-    form = assignvendorForm(request.form)
+def ru_datasource():
+    form = rudatasourceForm(request.form)
+    # Create cursor
+    cur = mysql.connection.cursor()
+
+    # Get status list of RU
+    # result=cur.execute("SELECT * FROM ru_registry where userid=%s ", (session['username']) )
+    # cur.execute("SELECT * FROM ru_registry where userid='hibellm' ")
+    # ru_status = cur.fetchall()
+
+    result = cur.execute("select * from (SELECT id,dbshortcode,pdfcode,create_date FROM myflaskapp.datasourcelist) as a left join (SELECT * FROM myflaskapp.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
+
+
+    # Get datasourcelist
+    # result = cur.execute("SELECT id,dbshortcode,pdfcode,create_date FROM datasourcelist")
+    datasource = cur.fetchall()
+
+    if result > 0:
+        return render_template('ru_datasource.html', datasource=datasource,form=form)
+    else:
+        msg = 'No R&amp;U Found...strange'
+        return render_template('ru_datasource.html', msg=msg ,form=form)
+    # Close connection
+    cur.close()
+
+
+# Get vendor
+    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
+    datasource = cur.fetchone()
+
+
+
+# Log a Request for access
+@app.route('/request_access/<string:id>', methods=['GET', 'POST'])
+@is_logged_in
+def request_access(id):
+    form = rudatasourceForm(request.form)
     if request.method == 'POST' and form.validate():
         dbshortcode = form.dbshortcode.data
         agree       = form.agree.data
@@ -358,96 +284,108 @@ def assign_vendor():
         flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
         return redirect(url_for('vendors'))
 
-    return render_template('assign_datasource.html', form=form)
-
-
-########
-# datasource Form Class
-class datasourceForm(Form):
-    dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
-    description = TextAreaField('Description', [validators.Length(min=30)])
-    hosting     = RadioField('Hosting', choices=[('EU', 'EU'), ('US', 'US')])
-    link        = StringField('Link')
-
-# Add datasource
-@app.route('/add_datasource', methods=['GET', 'POST'])
-@is_logged_in
-def add_datasource():
-    form = datasourceForm(request.form)
-    if request.method == 'POST' and form.validate():
-        dbshortcode = form.dbshortcode.data
-        description = form.description.data
-        hosting = form.hosting.data
-        link = form.link.data
-
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        # Execute
-        cur.execute("INSERT INTO datasources(dbshortcode, description, hosting, link, author) VALUES(%s, %s, %s, %s, %s)",(dbshortcode, description, hosting, link, session['username']))
-        # Commit to DB
-        mysql.connection.commit()
-        #Close connection
-        cur.close()
-        flash('DataSource ' + dbshortcode +' Created', 'success')
-        return redirect(url_for('dashboardd'))
-
     return render_template('add_datasource.html', form=form)
 
 
-# Edit datasource
-@app.route('/edit_datasource/<string:id>', methods=['GET', 'POST'])
-@is_logged_in
-def edit_datasource(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
+# Vendors
+# @app.route('/vendors')
+# def vendors():
+#     # Create cursor
+#     cur = mysql.connection.cursor()
+#     # Get vendors
+#     result = cur.execute("SELECT * FROM vendors")
+#     vendors = cur.fetchall()
+#
+#     if result > 0:
+#         return render_template('vendors.html', vendors=vendors)
+#     else:
+#         msg = 'No Vendors Found'
+#         return render_template('vendors.html', msg=msg)
+#     # Close connection
+#     cur.close()
+#
+# #Single Vendor
+# @app.route('/vendor/<string:id>/')
+# def vendor(id):
+#     # Create cursor
+#     cur = mysql.connection.cursor()
+#     # Get vendor
+#     result = cur.execute("SELECT * FROM accessrole WHERE id = %s", [id])
+#     vendor = cur.fetchone()
+#     return render_template('vendor.html', vendor=vendor)
 
-    # Get datasource by id
-    result = cur.execute("SELECT * FROM datasources WHERE id = %s", [id])
-    datasource = cur.fetchone()
-    cur.close()
-    # Get form
-    form = datasourceForm(request.form)
 
-    # Populate datasource form fields
-    form.dbshortcode.data = datasource['dbshortcode']
-    form.description.data = datasource['description']
-    form.hosting.data = datasource['hosting']
-    form.link.data = datasource['link']
+# Register Form Class
+class RegisterForm(Form):
+    name = StringField('Name', [validators.Length(min=1, max=50)])
+    username = StringField('Username', [validators.Length(min=4, max=25)])
+    email = StringField('Email', [validators.Length(min=6, max=50)])
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords do not match')
+    ])
+    confirm = PasswordField('Confirm Password')
 
-    if request.method == 'POST' and form.validate():
-        dbshortcode = request.form['dbshortcode']
-        description = request.form['description']
-        hosting = request.form['hosting']
-        link = request.form['link']
 
-        # Create Cursor
-        cur = mysql.connection.cursor()
-        app.logger.info(dbshortcode)
-        # Execute
-        cur.execute ("UPDATE datasources SET dbshortcode=%s, description=%s, hosting=%s, link=%s WHERE id=%s",(dbshortcode, description, hosting, link, id))
-        # Commit to DB
-        mysql.connection.commit()
-        #Close connection
-        cur.close()
-        flash('DataSource ' + dbshortcode + ' Updated', 'success')
-        return redirect(url_for('dashboardd'))
 
-    return render_template('edit_datasource.html', form=form)
+
+
+
+# Vendor Form Class
+class VendorForm(Form):
+    title = StringField('Title', [validators.Length(min=1, max=200)])
+    body = TextAreaField('Body', [validators.Length(min=30)])
+
 
 # Delete datasource
-@app.route('/delete_datasource/<string:id>', methods=['POST'])
-@is_logged_in
-def delete_datasource(id):
-    # Create cursor
-    cur = mysql.connection.cursor()
-    # Execute
-    cur.execute("DELETE FROM datasources WHERE id = %s", [id])
-    # Commit to DB
-    mysql.connection.commit()
-    #Close connection
-    cur.close()
-    flash('DataSource Deleted', 'success')
-    return redirect(url_for('dashboardd'))
+# @app.route('/delete_datasource/<string:id>', methods=['POST'])
+# @is_logged_in
+# def delete_datasource(id):
+#     # Create cursor
+#     cur = mysql.connection.cursor()
+#     # Execute
+#     cur.execute("DELETE FROM datasources WHERE id = %s", [id])
+#     # Commit to DB
+#     mysql.connection.commit()
+#     #Close connection
+#     cur.close()
+#     flash('DataSource Deleted', 'success')
+#     return redirect(url_for('dashboardd'))
+
+# MY RU BITS
+# RU Data source List
+# rudatasource Form Class
+
+
+# @app.route('/ru_datasource', methods=['GET', 'POST'])
+# @is_logged_in
+# def ru_datasource():
+# ###
+#     # Create cursor
+#     cur = mysql.connection.cursor()
+#
+#     # Get vendor by id
+#     result = cur.execute("SELECT * FROM vendors")
+#     vendor = cur.fetchall()
+#     cur.close()
+# ###
+#     form = rudatasourceForm(request.form)
+#     if request.method == 'POST' and form.validate():
+#         dbshortcode = form.dbshortcode.data
+#         agree       = form.agree.data
+#
+#         # Create Cursor
+#         cur = mysql.connection.cursor()
+#         # Execute
+#         cur.execute("INSERT INTO ru_registry(dbshortcode, author, agree) VALUES(%s, %s, %s)",(dbshortcode, session['username'], agree))
+#         # Commit to DB
+#         mysql.connection.commit()
+#         # Close connection
+#         cur.close()
+#         flash('DataSource ' + dbshortcode +' Access Request Created', 'success')
+#         return redirect(url_for('ru_datasource'))
+#
+#     return render_template('ru_datasource.html', form=form)
 
 
 if __name__ == '__main__':

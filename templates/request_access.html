@@ -1,18 +1,21 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Read & Understand for {{vendor.title}}</h1>
-  <small>Written by {{vendor.author}} on {{vendor.create_date}}</small>
+  <h1>Read & Understand for </h1>
+  {#
+  <!-- <small>Written by {{vendor.author}} on {{vendor.create_date}}</small> -->
   <!-- <div>
     {{vendor.body | safe}}
   </div> -->
+  #}
 <div class="ui segment">
 <div class="ui form ">
 
-  <form action="{{url_for('assign_vendor', id=vendor.id)}}" method="post">
+  <!-- <form action="{{url_for('request_access', id=1)}}" method="post"> -->
+  <form action="{{url_for('request_access', id={{datasource[0]}} )}}" method="post">
   <div class="inline field">
-    <div class="ui checkbox">    
-      <input type="hidden" name="dbshortcode" value="{{vendor.title}}">
+    <div class="ui checkbox">
+      <input type="hidden" name="dbshortcode" value="{{datasource[1]}}">
       <input type="checkbox" id="agree" name="agree" tabindex="0" value="1"><label for="agree">I agree to the Terms and Conditions</label>
     </div>
       <input class="ui button green" type="submit" value="Submit">
@@ -22,7 +25,7 @@
 </div>
   <div class="ui message blue inverted">
     <div class="field center">
-      <iframe src="{{vendor.pdfcode}}" width="640" height="700" allowfullscreen></iframe>
+      <iframe src="{{datasource[2]}}" width="640" height="700" allowfullscreen></iframe>
     </div>
 </div>
 

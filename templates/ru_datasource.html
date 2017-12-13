@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="ui segment green inverted">
+  <h1>Data Source R&amp;U Dashboard</h1>
+  <div class="description">
+    A list of Data sources available in the Medical Data Hub.
+    <p>View the pdf and click the "Read and Understand" acknowledgment, to get access.</p>
+  </div>
+</div>
+
+  <h1>Data source Summary for user : <i class="ui label huge">{{session.userid}}</i></h1>
+  {% from "includes/_formhelpers.html" import render_field %}
+
+  <table class="ui table very basic">
+    <tr>
+      <th>View R&amp;U</th>
+      <th>Data Source</th>
+      <th>Access</th>
+      <th>Date Requested</th>
+      <th>Status</th>
+    </tr>
+    {% for ds in datasource %}
+      <tr>
+        <td><a href="/request_access/{{ds.dbid}}"><i class="ui icon file pdf outline large red"></i></a></td>
+        <td>{{ ds[1]}}</td>
+        {% if ds[9]==1 %}
+          <td><i class="ui icon green unlock large"></i></td>
+          {% else %}
+          <td><i class="ui icon red lock alternative large"></i></td>
+        {% endif %}
+        <td>{{ds[6]}}</td>
+        {% if ds[9]==1 %}
+          <td>Granted on {{ds[8]}}</td>
+          {% elif ds[7]==1%}
+          <td>Pending</td>
+          {% else %}
+          <td>-</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </table>
+
+
+  <!-- <form method="POST" action="" class="ui mini form">
+    <div class="form-group inline-field">{{ render_field(form.dbshortcode, class_="form-control") }}</div>
+    <div class="form-group">{{ render_field(form.agree, class_="form-control") }}</div>
+    <br>
+    <p><input class="ui button green" type="submit" value="Submit">
+  </form> -->
+
+{% endblock %}

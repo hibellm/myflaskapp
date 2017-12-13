@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block body %}
 <div class="ui segment blue inverted">
-  <h1>Vendor Dashboard</h1>
+  <h1>Data Source R&U Dashboard</h1>
   <div class="meta"><i>Logged in as  {{session.username}}</i></div>
   <div class="description">
     A list of Vendors entered in the meta data.
@@ -10,28 +10,33 @@
   <a class="ui button green compact" href="/add_vendor"> Add Vendor</a>
 </div>
 
+  {% from "includes/_formhelpers.html" import render_field %} 
   <table class="ui sortable table very basic">
     <tr>
-      <th></th>
+      <th>View PDF</th>
       <th>ID</th>
-      <th>Vendor Code</th>
+      <th>Data Source</th>
       <th>Author</th>
-      <th>Date</th>
-      <th></th>
+      <th>Date Requested</th>
       <th></th>
     </tr>
     {% for vendor in vendors %}
       <tr>
-        <td><a href="vendor/{{vendor.id}}"><i class="ui icon external"></i></a></td>
+        <td><a href="vendor/{{vendor.id}}"><i class="ui icon file pdf outline"></i></a></td>
         <td>{{vendor.id}}</td>
         <td>{{vendor.title}}</td>
         <td>{{vendor.author}}</td>
         <td>{{vendor.create_date}}</td>
-        <td><a href="edit_vendor/{{vendor.id}}" class="ui button compact pull-right">Edit</a></td>
+        <td>
+
+          <form action="{{url_for('delete_vendor', id=vendor.id)}}" method="post">
+            <input type="hidden" name="_method" value="GRANT">
+            <input type="checkbox" tabindex="0" class="hidden"><label>I confirm</label>
+          </form>
         <td>
           <form action="{{url_for('delete_vendor', id=vendor.id)}}" method="post">
             <input type="hidden" name="_method" value="DELETE">
-            <input type="submit" value="Delete" class="ui button compact red">
+            <input type="submit" value="Request Access" class="ui button compact green">
           </form>
         </td>
       </tr>
