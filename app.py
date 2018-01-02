@@ -45,6 +45,7 @@ def roles():
     # Get roles
     result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles")
     roles = cur.fetchall()
+    
     # Get Roles for Dropdown
     result = cur.execute("SELECT * FROM rwd_meta_mdh.accessroles group by rolename")
     rolesdd = cur.fetchall()
