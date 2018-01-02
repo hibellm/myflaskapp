@@ -21,18 +21,35 @@
       <th>Status</th>
     </tr>
     {% for ds in datasource %}
-      <tr>
-        <td><a href="/request_access/{{ds.dbid}}"><i class="ui icon file pdf outline large red"></i></a></td>
-        <td>{{ ds[1]}}</td>
+      {% if ds[9]==1 %}
+        <tr class="positive">{{ds[1]}}
+      {% elif ds[7]==1 %}
+        <tr class="warning">{{ds[1]}}
+      {% else %}
+        <tr>{{ds[1]}}
+      {% endif %}
         {% if ds[9]==1 %}
+          <td><a href="/request_access/{{ds[0]}}" title="Already requested!"><i class="ui icon file pdf outline large red"></i></a></td>
+          <td>{{ds[1]}}</td>
           <td><i class="ui icon green unlock large"></i></td>
           {% else %}
+          <td><a href="/request_access/{{ds[0]}}" ><i class="ui icon file pdf outline large red"></i></a></td>
+          <td>{{ds[1]}}</td>
           <td><i class="ui icon red lock alternative large"></i></td>
         {% endif %}
-        <td>{{ds[6]}}</td>
+        {% if ds[6] == None %}
+         <td>{{ds[6]}}</td>
+        {% else %}
+        <td>{{ds[6].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+        {% endif %}
         {% if ds[9]==1 %}
-          <td>Granted on {{ds[8]}}</td>
-          {% elif ds[7]==1%}
+          <td>Granted on
+            {% if ds[8] == None %}
+               <i>unknown date</i>
+            {% else %}
+              {{ds[8].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+            {% endif %}
+          {% elif ds[7]==1 %}
           <td>Pending</td>
           {% else %}
           <td>-</td>

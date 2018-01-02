@@ -18,19 +18,25 @@ CREATE MULTISET TABLE DATAHUB_hibellm.ru_list ,NO FALLBACK ,
      CHECKSUM = DEFAULT,
      DEFAULT MERGEBLOCKRATIO
      (
-      dbid        INTEGER,
+      dbid        VARCHAR(5)   CHARACTER SET UNICODE NOT CASESPECIFIC,
       dbshortcode VARCHAR(100) CHARACTER SET UNICODE NOT CASESPECIFIC,
       pdflink     VARCHAR(500) CHARACTER SET UNICODE NOT CASESPECIFIC,
       added       INTEGER,
       approval    VARCHAR(100)
       )
 NO PRIMARY INDEX ; 
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(1,'CPRD','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14142',current_date,NULL);
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(2,'CHESS','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14132',current_date,NULL);
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(3,'IMSEU','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14134',current_date,NULL);
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(4,'IMSRA','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14135',current_date,NULL);
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(5,'IPSOS','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14136',current_date,NULL);
-INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES(6,'TRUVEN','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14137',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('1','CPRD','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14142',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('2','CHESS','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14120',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('3','IMSEU','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14122',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('4','IMSRA','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14128',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('5','IPSOS','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14123',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('6','TRUVEN','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14124',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('7','PREMIER','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14127',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('8','SEERM','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14129',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('9','UNOS','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14130',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('10','OPTUM','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14174',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('11','NHANES','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14125',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('12','CPT','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14121',current_date,NULL);
 
 
 

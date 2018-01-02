@@ -125,7 +125,6 @@ def logout():
 class rudatasourceForm(Form):
     dbshortcode = StringField('DBShortCode', [validators.Length(min=1, max=10)])
     agree       = BooleanField('I agree.', )
-    dbid        = StringField('dbid',)
 
 # Dashboard of RU
 @app.route('/ru_datasource',methods=['GET', 'POST'])
@@ -134,7 +133,7 @@ def ru_datasource():
     form = rudatasourceForm(request.form)
 
     # Get list of RU
-    cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode;")
+    cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
     datasource= cur.fetchall()
 
     # Get datasourcelist
@@ -194,7 +193,6 @@ def logrequest(id):
     print(type(logrequest))
     print('-------FLASK INFO--------(LOGREQUEST)--END')
 
-
     form = rudatasourceForm(request.form)
 
     if request.method == 'POST' and form.validate():
@@ -203,18 +201,17 @@ def logrequest(id):
         agree       = form.agree.data
         dttime      = datetime.now()
 
-        print('The value of agree is :'+str(agree))
+        print('The value of agree is :'+agree)
         # Check if agree ticked
         if agree == 1:
-            print('The user agreed to datasource :'+ dbshortcode)
-            cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbshortcode,requestdate,requested) VALUES(?,?,?,?)",(session['userid'],dbshortcode,dttime,int(agree)))
+            print('The user aggreed to datasource :'+ dbshortcode)
+            cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbshortcode,requestdate,request) VALUES(?,?,?,?)",(session['userid'],dbshortcode,dttime,agree))
 
             flash('DataSource ' + dbshortcode +' Access requested', 'success')
             return redirect(url_for('ru_datasource'))
         else:
             flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
-            # return redirect(url_for('request_access'))
-            return render_template('/request_access.html', form=form, logrequest=logrequest )
+            return redirect(url_for('/request_access/<string:id>', logrequest=logrequest))
     return render_template('/request_access.html', form=form, logrequest=logrequest )
     #return render_template('/request_access/<string:id>', form=form, logrequest=logrequest)
 

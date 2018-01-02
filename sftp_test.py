@@ -4,7 +4,7 @@ import paramiko
 import stat
 from collections import defaultdict
 import os
- 
+
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 try:
@@ -37,7 +37,9 @@ def recursive_ftp(sftp, path='/SDTM Conversion Library/Converted Studies/', file
 files = recursive_ftp(sftp)
 #print(files)
 x=dict.items(files)
-print(x)
+#print(x)
+for key, value in x.items() :
+    print ('The key is '+key)
 
 
 #with open('myfile.txt', 'w') as f:
