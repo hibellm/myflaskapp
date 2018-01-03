@@ -75,8 +75,8 @@ def login():
 
         # Get user by userid
         for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
-            print(row)
-            print(row[3])
+            # print(row)
+            # print(row[3])
             result=row
         # print(dir(result))
 
@@ -153,8 +153,8 @@ def logrequest(id):
     # CHECK IF ALREADY APPPLIED?
     tst=tdcon.execute("SELECT '1' FROM datahub_hibellm.ru_registry WHERE dbid = ? and userid = ?", (id,session['userid']) )
     mjh = str(tst.fetchall())
-    print('mjh type is',type(mjh))
-    print('length of mjh is :',len(mjh))
+    # print('mjh type is',type(mjh))
+    # print('length of mjh is :',len(mjh))
 
     if len(mjh)>2:
         flash('Already have access to the DataSource (or it is still Pending)', 'success')
@@ -165,12 +165,12 @@ def logrequest(id):
         # cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid= ?", (id))
         cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid='"+id+"'")
         logrequest = cur.fetchall()
-        print('-------FLASK INFO--------(LOGREQUEST)--START')
-        print('The ID wanted is:'+id)
-        print('The results are:')
-        print(logrequest)
-        print(type(logrequest))
-        print('-------FLASK INFO--------(LOGREQUEST)--END')
+        # print('-------FLASK INFO--------(LOGREQUEST)--START')
+        # print('The ID wanted is:'+id)
+        # print('The results are:')
+        # print(logrequest)
+        # print(type(logrequest))
+        # print('-------FLASK INFO--------(LOGREQUEST)--END')
 
         form = rudatasourceForm(request.form)
 
@@ -180,12 +180,12 @@ def logrequest(id):
             agree       = form.agree.data
             dttime      = datetime.now()
 
-            print('The value of agree is :'+str(agree))
+            # print('The value of agree is :'+str(agree))
             # Check if agree ticked
             if agree == 1:
                 print('The user agreed to datasource :'+ dbshortcode)
                 cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbid,dbshortcode,requestdate,requested) VALUES(?,?,?,?,?)",(session['userid'],dbid,dbshortcode,dttime,int(agree)))
-        
+
                 flash('DataSource ' + dbshortcode +' Access requested', 'success')
                 return redirect(url_for('ru_datasource'))
             else:
@@ -196,4 +196,5 @@ def logrequest(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run('0.0.0.0',5003,debug=True)
+    #app.run('0.0.0.0',5003,debug=True)
+    app.run('0.0.0.0',5003,debug=False)
