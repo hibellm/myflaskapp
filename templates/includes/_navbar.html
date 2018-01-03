@@ -13,14 +13,13 @@
           <ul class="nav navbar-nav">
             {% if session.logged_in %}
               <li><a href="/ru_datasource">RU Data Sources</a></li>
-              <!-- <li><a href="/dashboardv">Data Sources</a></li> -->
             {% endif %}
             <li><a href="/about">About</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
             {% if session.logged_in %}
-              <li><a href="#">Logged-in as: <div class="ui label blue">{{session.userid}}</div></a> </li>
+              <li><a href="#">Logged-in as <div class="ui label blue">{{session.userid}}</div></a> </li>
               <li><a href="/logout"><i class="ui sign out icon"></i>Logout</a></li>
             {% else %}
               <li><a href="/register">Register</a></li>

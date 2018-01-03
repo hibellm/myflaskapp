@@ -134,7 +134,9 @@ def ru_datasource():
     form = rudatasourceForm(request.form)
 
     # Get list of RU
-    cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode;")
+    cur=tdcon.execute("select a.dbid,a.dbshortcode,pdflink,approval,userid,requestdate,requested,granteddate,granted "+
+                      "from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a "+
+                      "left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode;")
     datasource= cur.fetchall()
 
     # Get datasourcelist
@@ -142,121 +144,55 @@ def ru_datasource():
         return render_template('ru_datasource.html', datasource=datasource,form=form)
     else:
         msg = 'No R&amp;U Found...strange'
-        return render_template('ru_datasource.html', msg=msg ,form=form)
-
-#Request Rand U
-# @app.route('/request_access', methods=['GET'])
-# @is_logged_in
-# def request_access():
-# #     # Create cursor
-# #     cur = mysql.connection.cursor()
-# #     # Get articles
-# #     result = cur.execute("SELECT * FROM articles")
-# #     articles = cur.fetchall()
-# #
-# #     if result > 0:
-# #         return render_template('articles.html', articles=articles)
-# #     else:
-# #         msg = 'No Articles Found'
-# #         return render_template('articles.html', msg=msg)
-# #     # Close connection
-# #     cur.close()
-#     # Get the Rand U
-#     # cur=tdcon.execute("select * from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a left join (SELECT * FROM datahub_hibellm.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
-#     # datasource= cur.fetchall()
-#     cur = tdcon.execute("SELECT * FROM datahub_hibellm.ru_list")
-#     datasource = cur.fetchall()
-#     print('-------FLASK INFO--------(REQUEST_ACCESS)--START')
-#     print('The ID I want is:'+id)
-#     print('The results are:')
-#     print(datasource)
-#     print('-------FLASK INFO--------(REQUEST_ACCESS)--END')
-#
-#     if cur > 0:
-#             return render_template('request_access.html', datasource=datasource)
-#     else:
-#             msg = 'No Rand U Found - that is weired'
-#             return render_template('request_access.html', msg=msg)
-#     # return redirect(url_for('/request_access/<string:id>',datasource=datasource))
-#     # return render_template('request_access.html', id=id,datasource=datasource)
+        return render_template('ru_datasource.html', msg=msg,form=form)
 
 # Log a Request for access
 @app.route('/request_access/<string:id>', methods=['GET', 'POST'])
 @is_logged_in
 def logrequest(id):
+    # CHECK IF ALREADY APPPLIED?
+    tst=tdcon.execute("SELECT '1' FROM datahub_hibellm.ru_registry WHERE dbid = ? and userid = ?", (id,session['userid']) )
+    mjh = str(tst.fetchall())
+    print('mjh type is',type(mjh))
+    print('length of mjh is :',len(mjh))
 
-    cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid = ?", (id))
-    logrequest = cur.fetchall()
-    print('-------FLASK INFO--------(LOGREQUEST)--START')
-    print('The ID wanted is:'+id)
-    print('The results are:')
-    print(logrequest)
-    print(type(logrequest))
-    print('-------FLASK INFO--------(LOGREQUEST)--END')
+    if len(mjh)>2:
+        flash('Already have access to the DataSource (or it is still Pending)', 'success')
+        return redirect(url_for('ru_datasource'))
+    else:
+        print('Data Source not yet requested so continuing')
 
+        # cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid= ?", (id))
+        cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid='"+id+"'")
+        logrequest = cur.fetchall()
+        print('-------FLASK INFO--------(LOGREQUEST)--START')
+        print('The ID wanted is:'+id)
+        print('The results are:')
+        print(logrequest)
+        print(type(logrequest))
+        print('-------FLASK INFO--------(LOGREQUEST)--END')
 
-    form = rudatasourceForm(request.form)
+        form = rudatasourceForm(request.form)
 
-    if request.method == 'POST' and form.validate():
-        dbid        = form.dbid.data
-        dbshortcode = form.dbshortcode.data
-        agree       = form.agree.data
-        dttime      = datetime.now()
+        if request.method == 'POST' and form.validate():
+            dbid        = form.dbid.data
+            dbshortcode = form.dbshortcode.data
+            agree       = form.agree.data
+            dttime      = datetime.now()
 
-        print('The value of agree is :'+str(agree))
-        # Check if agree ticked
-        if agree == 1:
-            print('The user agreed to datasource :'+ dbshortcode)
-            cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbshortcode,requestdate,requested) VALUES(?,?,?,?)",(session['userid'],dbshortcode,dttime,int(agree)))
-
-            flash('DataSource ' + dbshortcode +' Access requested', 'success')
-            return redirect(url_for('ru_datasource'))
-        else:
-            flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
-            # return redirect(url_for('request_access'))
-            return render_template('/request_access.html', form=form, logrequest=logrequest )
-    return render_template('/request_access.html', form=form, logrequest=logrequest )
-    #return render_template('/request_access/<string:id>', form=form, logrequest=logrequest)
-
-
-# Articles
-# @app.route('/articles')
-# def articles():
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#     # Get articles
-#     result = cur.execute("SELECT * FROM articles")
-#     articles = cur.fetchall()
-#
-#     if result > 0:
-#         return render_template('articles.html', articles=articles)
-#     else:
-#         msg = 'No Articles Found'
-#         return render_template('articles.html', msg=msg)
-#     # Close connection
-#     cur.close()
-#
-#
-# #Single Article
-# @app.route('/article/<string:id>/')
-# def article(id):
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#     # Get article
-#     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-#     article = cur.fetchone()
-#     return render_template('article.html', article=article)
-
-
-
-
-
-
-
-
-
-
-
+            print('The value of agree is :'+str(agree))
+            # Check if agree ticked
+            if agree == 1:
+                print('The user agreed to datasource :'+ dbshortcode)
+                cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbid,dbshortcode,requestdate,requested) VALUES(?,?,?,?,?)",(session['userid'],dbid,dbshortcode,dttime,int(agree)))
+        
+                flash('DataSource ' + dbshortcode +' Access requested', 'success')
+                return redirect(url_for('ru_datasource'))
+            else:
+                flash('You have not ticked the "Agree". ' + dbshortcode +' Access not requested', 'danger')
+                # return redirect(url_for('request_access'))
+                return render_template('/request_access.html', form=form, logrequest=logrequest )
+        return render_template('/request_access.html', form=form, logrequest=logrequest )
 
 if __name__ == '__main__':
     app.secret_key='secret123'

@@ -2,16 +2,14 @@
 
 {% block body %}
 <div class="ui segment green inverted">
-  <h1>Data Source R&amp;U Dashboard</h1>
+  <h1 class="ui header aligned center">Data Source R&amp;U Dashboard</h1>
   <div class="description">
     A list of Data sources available in the Medical Data Hub.
     <p>View the pdf and click the "Read and Understand" acknowledgment, to get access.</p>
   </div>
 </div>
-
-  <h1>Data source Summary for user : <i class="ui label huge">{{session.userid}}</i></h1>
-  {% from "includes/_formhelpers.html" import render_field %}
-
+<div class="ui segment">
+  <h1>Data source Summary for user <i class="ui label huge">{{session.userid}}</i></h1>
   <table class="ui table very basic">
     <tr>
       <th>View R&amp;U</th>
@@ -21,49 +19,56 @@
       <th>Status</th>
     </tr>
     {% for ds in datasource %}
-      {% if ds[9]==1 %}
+      {% if ds[8]==1 %}
         <tr class="positive">{{ds[1]}}
-      {% elif ds[7]==1 %}
+      {% elif ds[6]==1 %}
         <tr class="warning">{{ds[1]}}
       {% else %}
         <tr>{{ds[1]}}
       {% endif %}
-        {% if ds[9]==1 %}
-          <td><a href="/request_access/{{ds[0]}}" title="Already requested!"><i class="ui icon file pdf outline large red"></i></a></td>
+        {% if ds[8]==1 %}
+          <td><a href="/request_access/{{ds[0]}}" title="Already granted!"><i class="ui icon file pdf outline large red"></i></a></td>
           <td>{{ds[1]}}</td>
           <td><i class="ui icon green unlock large"></i></td>
-          {% else %}
-          <td><a href="/request_access/{{ds[0]}}" ><i class="ui icon file pdf outline large red"></i></a></td>
+        {% elif ds[6]==1 %}
+          <td><a href="/request_access/{{ds[0]}}" title="Already requested!"><i class="ui icon file pdf outline large red"></i></a></td>
+          <td>{{ds[1]}}</td>
+          <td><i class="ui icon red lock alternative large"></i></td>
+        {% else %}
+          <td><a href="/request_access/{{ds[0]}}" title="View the PDF!"><i class="ui icon file pdf outline large red"></i></a></td>
           <td>{{ds[1]}}</td>
           <td><i class="ui icon red lock alternative large"></i></td>
         {% endif %}
-        {% if ds[6] == None %}
-         <td>{{ds[6]}}</td>
+        {# REQUEST DATE #}
+        {% if ds[5] == None %}
+          <td>{{ds[5]}}</td>
         {% else %}
-        <td>{{ds[6].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+          <td>{{ds[5].strftime('%Y-%m-%d %H:%M:%S')}}</td>
         {% endif %}
-        {% if ds[9]==1 %}
+        {# GRANT DATE #}
+        {% if ds[8]==1 %}
           <td>Granted on
-            {% if ds[8] == None %}
-               <i>unknown date</i>
+            {% if ds[7] == None %}
+              <i>unknown date</i>
             {% else %}
-              {{ds[8].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+              {{ds[7].strftime('%Y-%m-%d %H:%M:%S')}}
             {% endif %}
-          {% elif ds[7]==1 %}
+          </td>
+        {% elif ds[6]==1 %}
           <td>Pending</td>
-          {% else %}
+        {% else %}
           <td>-</td>
         {% endif %}
       </tr>
     {% endfor %}
   </table>
+</div>
 
-
-  <!-- <form method="POST" action="" class="ui mini form">
-    <div class="form-group inline-field">{{ render_field(form.dbshortcode, class_="form-control") }}</div>
-    <div class="form-group">{{ render_field(form.agree, class_="form-control") }}</div>
-    <br>
-    <p><input class="ui button green" type="submit" value="Submit">
-  </form> -->
-
+  <div class="ui basic modal" id="mod1">
+    <div class="content">
+      <div class="description">
+          {% include 'includes/_messages.html' %}
+      </div>
+    </div>
+  </div>
 {% endblock %}
