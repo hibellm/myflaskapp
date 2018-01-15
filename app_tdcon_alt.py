@@ -216,45 +216,6 @@ def logrequest(id):
     #return render_template('/request_access/<string:id>', form=form, logrequest=logrequest)
 
 
-# Articles
-# @app.route('/articles')
-# def articles():
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#     # Get articles
-#     result = cur.execute("SELECT * FROM articles")
-#     articles = cur.fetchall()
-#
-#     if result > 0:
-#         return render_template('articles.html', articles=articles)
-#     else:
-#         msg = 'No Articles Found'
-#         return render_template('articles.html', msg=msg)
-#     # Close connection
-#     cur.close()
-#
-#
-# #Single Article
-# @app.route('/article/<string:id>/')
-# def article(id):
-#     # Create cursor
-#     cur = mysql.connection.cursor()
-#     # Get article
-#     result = cur.execute("SELECT * FROM articles WHERE id = %s", [id])
-#     article = cur.fetchone()
-#     return render_template('article.html', article=article)
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     app.secret_key='secret123'
     app.run('0.0.0.0',5003,debug=True)

@@ -26,3 +26,352 @@
 10.112.104.172 - - [03/Jan/2018 16:04:58] "POST /login HTTP/1.1" 302 -
 10.112.104.172 - - [03/Jan/2018 16:05:03] "GET /ru_datasource HTTP/1.1" 200 -
 10.112.104.70 - - [03/Jan/2018 16:26:33] "GET /ru_datasource HTTP/1.1" 200 -
+10.112.104.172 - - [03/Jan/2018 17:02:06] "GET /logout HTTP/1.1" 302 -
+10.112.104.172 - - [03/Jan/2018 17:02:06] "GET /login HTTP/1.1" 200 -
+10.112.104.172 - - [09/Jan/2018 09:16:46] "GET /login HTTP/1.1" 200 -
+10.112.104.172 - - [09/Jan/2018 09:16:47] "GET /favicon.ico HTTP/1.1" 404 -
+[2018-01-09 09:16:57,035] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:16:57] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:17:00] "GET /login HTTP/1.1" 200 -
+10.112.104.172 - - [09/Jan/2018 09:17:00] "GET /favicon.ico HTTP/1.1" 404 -
+[2018-01-09 09:17:18,374] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:17:18] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:17:20] "GET /login HTTP/1.1" 200 -
+[2018-01-09 09:17:36,600] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:17:36] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:17:41] "GET /login HTTP/1.1" 200 -
+[2018-01-09 09:17:51,462] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:17:51] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:17:53] "GET /login HTTP/1.1" 200 -
+10.112.104.172 - - [09/Jan/2018 09:17:58] "GET /login HTTP/1.1" 200 -
+[2018-01-09 09:18:24,750] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:18:24] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:18:26] "GET /login HTTP/1.1" 200 -
+[2018-01-09 09:18:35,974] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.172 - - [09/Jan/2018 09:18:35] "POST /login HTTP/1.1" 500 -
+10.112.104.172 - - [09/Jan/2018 09:18:42] "GET /login HTTP/1.1" 200 -
+10.112.104.70 - - [10/Jan/2018 10:09:01] "GET / HTTP/1.1" 200 -
+10.112.104.70 - - [10/Jan/2018 10:09:01] "GET /favicon.ico HTTP/1.1" 404 -
+10.112.104.70 - - [10/Jan/2018 13:52:02] "GET /logout HTTP/1.1" 302 -
+10.112.104.70 - - [10/Jan/2018 13:52:02] "GET /login HTTP/1.1" 200 -
+10.112.104.70 - - [10/Jan/2018 13:52:05] "GET /register HTTP/1.1" 200 -
+10.112.104.70 - - [10/Jan/2018 13:52:26] "POST /register HTTP/1.1" 200 -
+[2018-01-10 13:52:35,064] ERROR in app: Exception on /register [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 60, in register
+    for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.70 - - [10/Jan/2018 13:52:35] "POST /register HTTP/1.1" 500 -
+[2018-01-10 13:52:40,593] ERROR in app: Exception on /register [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 60, in register
+    for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.70 - - [10/Jan/2018 13:52:40] "POST /register HTTP/1.1" 500 -
+[2018-01-10 13:52:53,691] ERROR in app: Exception on /register [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 60, in register
+    for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.70 - - [10/Jan/2018 13:52:53] "POST /register HTTP/1.1" 500 -
+[2018-01-10 13:53:11,773] ERROR in app: Exception on /register [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 60, in register
+    for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.70 - - [10/Jan/2018 13:53:11] "POST /register HTTP/1.1" 500 -
+10.112.104.70 - - [10/Jan/2018 13:55:14] "GET /login HTTP/1.1" 200 -
+[2018-01-10 13:55:20,986] ERROR in app: Exception on /login [POST]
+Traceback (most recent call last):
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1988, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1641, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1544, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1639, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/opt/anaconda3/lib/python3.5/site-packages/flask/app.py", line 1625, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "app_tdcon.py", line 77, in login
+    for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 671, in execute
+    self.internalCursor.execute(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 738, in execute
+    self._execute(self.cursor.execute, query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/udaexec.py", line 782, in _execute
+    func(query, params, **kwargs)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 522, in execute
+    self.executemany(query, [params, ], queryTimeout)
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 541, in executemany
+    checkStatus(rc, hStmt=self.hStmt, method="SQLPrepare")
+  File "/opt/anaconda3/lib/python3.5/site-packages/teradata-15.10.0.16-py3.5.egg/teradata/tdodbc.py", line 206, in checkStatus
+    raise DatabaseError(i[2], u"[{}] {}".format(i[0], msg), i[0])
+teradata.api.DatabaseError: (32, '[08S01] [Teradata][Unix system error]  32 Socket error - Connection reset by peer')
+10.112.104.70 - - [10/Jan/2018 13:55:20] "POST /login HTTP/1.1" 500 -

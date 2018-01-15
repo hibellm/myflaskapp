@@ -7,6 +7,10 @@ from functools import wraps
 from datetime import datetime, date, time
 import teradata
 
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import os
 
 app = Flask(__name__)
 
@@ -15,10 +19,29 @@ print('STARTING THE FLASK APP...')
 print('-------FLASK INFO--------')
 
 #TERADATA CONNECTION INFOMATION - ALSO USES UDAEXEC.INI FILE IN HOME DIRECTORY
-udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="INFO",logConsole=False,configureLogging=False)
-#tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
-#USED TO WRITE TO THE TABLES
-tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_ldap)", authentication="LDAP");
+# udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="INFO",logConsole=False,configureLogging=False)
+# tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_ldap)");
+
+tdUser = os.environ.get('REST_USER', 'hibellm')
+tdPassword = os.environ.get('REST_PASSWORD', '$$tdwallet(pw_tera)')
+restServer = "{0}:{1}/{2}".format(os.environ.get('REST_HOST', 'rkaustms02.kau.roche.com'), os.environ.get('REST_PORT', '1080'),os.environ.get('REST_PATH','tdrest/systems/rochetd'))
+
+sql="SELECT TRIM(DatabaseName) AS \"Database\", PermSpace  AS \"Size\" FROM dbc.databases where databasename like 'RWD_VDM%' ORDER BY 2 DESC;";
+rformat="CSV";
+
+
+response = requests.get(('http://{}/queries?'+sql+rformat).format(restServer),
+auth=HTTPBasicAuth(tdUser, tdPassword),
+headers={'content-type': 'application/json','Accept': 'application/vnd.com.teradata.rest-v1.0+json, */*; q=0.01'})
+
+print(('http://{}/queries?'+sql).format(restServer))
+# WORKING
+# response = requests.get('http://{}/tdrest/systems/rochetd/databases'.format(restServer),
+# auth=HTTPBasicAuth(tdUser, tdPassword),
+# headers={'content-type': 'application/json','Accept': 'application/vnd.com.teradata.rest-v1.0+json, */*; q=0.01'})
+
+print('result is:'+response.text[0])
+print("status: {0}".format(response.status_code))
 
 print('--------FLASK INFO---------')
 print('CONNECTION TO TERADATA MADE')

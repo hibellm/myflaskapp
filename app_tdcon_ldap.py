@@ -6,9 +6,23 @@ from passlib.hash import sha256_crypt
 from functools import wraps
 from datetime import datetime, date, time
 import teradata
-
+import logging
+from logging.handlers import SMTPHandler
+from logging import Formatter
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+
+#ERROR Handling
+@app.errorhandler(404)
+def page_not_found(error):
+    return ender_template('page_not_found.html', error=error),404
+
+#IN CASE THE LOG ON DOES NOT WORK
+@app.errorhandler(500)
+def internal_server_error(error):
+    return render_template('login.html', error=error),500
+
 
 print('-------FLASK INFO--------')
 print('STARTING THE FLASK APP...')
@@ -16,13 +30,13 @@ print('-------FLASK INFO--------')
 
 #TERADATA CONNECTION INFOMATION - ALSO USES UDAEXEC.INI FILE IN HOME DIRECTORY
 udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="INFO",logConsole=False,configureLogging=False)
-#tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
 #USED TO WRITE TO THE TABLES
 tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_ldap)", authentication="LDAP");
 
 print('--------FLASK INFO---------')
 print('CONNECTION TO TERADATA MADE')
 print('--------FLASK INFO---------')
+
 
 # Index
 @app.route('/')
@@ -37,69 +51,87 @@ def about():
 
 
 #LOGIN/REGISTER FUNCTIONS
-# Register Form Class
-class RegisterForm(Form):
-    userid   = StringField('User ID', [validators.Length(min=1, max=10)])
-    email    = StringField('Email', [validators.Length(min=6, max=50)])
-    username = StringField('Username', [validators.Length(min=1, max=50)])
-    userpw   = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords do not match')
-    ])
-    confirm = PasswordField('Confirm Password')
+# # Register Form Class
+# class RegisterForm(Form):
+#     userid   = StringField('User ID', [validators.Length(min=1, max=10)])
+#     email    = StringField('Email', [validators.Length(min=6, max=50)])
+#     username = StringField('Username', [validators.Length(min=1, max=50)])
+#     userpw   = PasswordField('Password', [
+#         validators.DataRequired(),
+#         validators.EqualTo('confirm', message='Passwords do not match')
+#     ])
+#     confirm = PasswordField('Confirm Password')
 
-# User Register
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
-        userid   = form.userid.data
-        email    = form.email.data
-        username = form.username.data
-        userpw   = sha256_crypt.encrypt(str(form.userpw.data))
-
-        # ENTER THE DATA INTO A USER TABLE
-        for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
-            print('Entered the user:'+userid+' into the database')
-
-        flash('You are now registered and can log in', 'success')
-
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+# # User Register
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     form = RegisterForm(request.form)
+#     if request.method == 'POST' and form.validate():
+#         userid   = form.userid.data
+#         email    = form.email.data
+#         username = form.username.data
+#         userpw   = sha256_crypt.encrypt(str(form.userpw.data))
+#
+#         # ENTER THE DATA INTO A USER TABLE
+#         for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+#             print('Entered the user:'+userid+' into the database')
+#
+#         flash('You are now registered and can log in', 'success')
+#
+#         return redirect(url_for('login'))
+#     return render_template('register.html', form=form)
 
 # User login
+# LIST OF RUs
+class RequestForm(Form):
+    userid = StringField('userid', [validators.Length(min=1, max=10)])
+    userpw   = PasswordField('Password', [validators.DataRequired()])
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    form = RequestForm(request.form)
+
+    if request.method == 'POST' and form.validate():
         # Get Form Fields
         userid = request.form['userid']
+        print(userid)
+
+        print('len userid is:'+len(userid))
         password_candidate = request.form['userpw']
+        print(password_candidate)
+        print('len password_candidate is:'+len(password_candidate))
+        utdcon = udaExec.connect(method="odbc", system="rochetd",username=userid, password=password_candidate, authentication="LDAP");
 
         # Get user by userid
-        for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
-            # print(row)
+        for row in utdcon.execute("SELECT USER"):
+            print(row)
             # print(row[3])
             result=row
-        # print(dir(result))
 
-        if len(result) > 0:
-            # Get stored hash
-            userpwd = result[3]
-
-            # Compare Passwords
-            if sha256_crypt.verify(password_candidate, userpwd):
-                # Passed
+            if len(result) > 0:
+                session['userid'] = userid
+                print('session user id is:'+session['userid'])
                 session['logged_in'] = True
-                session['userid'] = result[0]
-
+                print('result found - so logged in')
                 flash('You are now logged in', 'success')
+
+                # Compare Passwords
+                # if sha256_crypt.verify(password_candidate, userpwd):
+                #     # Passed
+                #     session['logged_in'] = True
+                #     session['userid'] = result[0]
+                #
+                #     flash('You are now logged in', 'success')
                 return redirect(url_for('ru_datasource'))
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)
         else:
-            error = 'UserID not found'
-            return render_template('login.html', error=error)
+            print('len userid is:'+len(userid))
+            if len(userid)<1:
+                error = 'UserID not found'
+                flash('No userid found','danger')
+                return render_template('login.html', error=error)
 
     return render_template('login.html')
 
@@ -198,5 +230,4 @@ def logrequest(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    #app.run('0.0.0.0',5003,debug=False)
-    app.run('0.0.0.0',5003,debug=True)
+    app.run('0.0.0.0', 5003, debug=False)
