@@ -1,5 +1,0 @@
-2017-12-11 15:12:47,107 - teradata.udaexec - INFO - Initializing UdaExec...
-2017-12-11 15:12:47,107 - teradata.udaexec - INFO - Reading config files: ['/etc/udaexec.ini: Not Found', '/home/users/hibellm/udaexec.ini: Found', '/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/udaexec.ini: Not Found']
-2017-12-11 15:12:47,107 - teradata.udaexec - INFO - Found run number file: "/data/RWD_SHARE/MDH/users/hibellm/flask/ruflaskapp/.runNumber"
-2017-12-11 15:12:47,107 - teradata.udaexec - INFO - Cleaning up log files older than 90 days.
-2017-12-11 15:12:47,107 - teradata.udaexec - INFO - Removed 0 log files.

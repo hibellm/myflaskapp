@@ -38,9 +38,36 @@ INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VAL
 INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('10','OPTUM','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14174',current_date,NULL);
 INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('11','NHANES','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14125',current_date,NULL);
 INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('12','CPT','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14121',current_date,NULL);
+INSERT INTO DATAHUB_hibellm.ru_list(dbid,dbshortcode,pdflink,added,approval) VALUES('13','IMSPM','http://we3.collaboration.roche.com/team/201266f4/_layouts/DocIdRedir.aspx?ID=MDH1-1210493889-14187',current_date,NULL);
 
+--CODE TO CHECK IF WE NEED TO UPDATE THE RU_LIST
+/*
+select * from
+(select 1 as "id",count(*) as rucount
+from DATAHUB_hibellm.ru_list) as a
+left join
+(select 1 as "id",count(*) as tpcount
+from RWD_META_MDH.MDHTPDetailsC
+where tp_lvl1='TRAINING' and dbcode like '03_Compliance%' and TP_lvl2 is null) as b
+on a.id=b.id;
+*/
 
-
+--THIS WILL UPDATE THE RU_LIST TABLE WITH THE RU PDF LINKS
+INSERT INTO DATAHUB_hibellm.ru_list (dbid,dbshortcode,pdflink,added,approval) 
+select a.dbid
+      ,a.dbshortcode
+      ,a.reflink
+      ,current_date
+      ,NULL
+from
+(select TPTitle as dbshortcode
+       ,reflink
+       ,ROW_NUMBER() OVER (ORDER BY reflink DESC ) as dbid
+from RWD_META_MDH.MDHTPDetailsC
+where tp_lvl1='TRAINING' 
+      and dbcode like '03_Compliance%' 
+      and TP_lvl2 is null
+      and TPtitle not like ('reference%')) as a;
 
 
 
