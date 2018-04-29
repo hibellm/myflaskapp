@@ -2,31 +2,36 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>MetadataFlaskApp</title>
+    <title>R&amp;U - FlaskApp</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css">
   </head>
 
   <body>
-      {% include 'includes/_navbar.html' %}
-    <div class="container">
-      {% include 'includes/_messages.html' %}
-      {% block body %}{% endblock %}
-    </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
     <!-- <script src="/tablesort.js"></script> -->
-    <script src="//cdn.ckeditor.com/4.6.2/basic/ckeditor.js"></script>
-    <!--script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script-->
-    <script type="text/javascript">
+    <!-- <script src="//cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script> -->
+    <!-- <script type="text/javascript">
       CKEDITOR.replace('editor')
+    </script> -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+          // console.log( "message flashed!" );
+          var messages = "{{ get_flashed_messages() }}";
+          if (typeof messages != 'undefined' && messages != '[]') {
+              $('.ui.modal').modal('show');
+          };
+      });
     </script>
-    <script>
-    $('#roledd')
-    .dropdown()
-    ;
-    </script>
-    </body>
+
+
+      {% include 'includes/_navbar.html' %}
+    <div class="container">
+      {# % include 'includes/_messages.html' % #}
+      {% block body %}{% endblock %}
+    </div>
+
+  </body>
 </html>

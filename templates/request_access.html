@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h1>Read &amp; Understand</h1>
+
+<div class="ui segment">
+<div class="ui form ">
+  {% for lr in logrequest %}
+  <form action="" method="post">
+  <div class="inline field">
+    <div class="ui checkbox">
+      <input type="hidden" name="dbid" value="{{lr[0]}}">
+      <input type="hidden" name="dbshortcode" value="{{lr[1]}}">
+      <input type="checkbox" id="agree" name="agree" tabindex="0" value="1"><label for="agree">I agree to the Terms and Conditions</label>
+    </div>
+      <input class="ui button green" type="submit" value="Submit">
+      <a href={{url_for('ru_datasource')}}>
+      <div class="ui labeled right floated button grey">
+        <div class="ui button"><i class="ui icon reply"></i> Back</div>
+      </div></a>
+  </div>
+  </form>
+</div>
+</div>
+  <div class="ui message blue inverted">
+    <div class="field center">
+      <iframe src="{{lr[2]}}" width="800" height="900" allowfullscreen></iframe>
+    </div>
+</div>
+{% endfor %}
+
+<div class="ui basic modal" id="mod2">
+  <div class="content">
+    <div class="description">
+        {% include 'includes/_messages.html' %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

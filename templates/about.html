@@ -2,16 +2,23 @@
 
 {% block body %}
 <div class="jumbotron text-center">
-  <h1>About the R&U FlaskApp</h1>
-  <p class="lead">This application is built on the Python Flask framework and is the focus for the "Python Flask From Scratch" YouTube series</p>
+  <h1>About the R&amp;U FlaskApp</h1>
+  <p class="lead">This application is built on the <a href="http://flask.pocoo.org/docs/0.12/">Python Flask framework</a>. A Micro web-development framework for Python.</p>
   {% if session.logged_in == NULL %}
-    <a href="/register" class="btn btn-primary btn-lg">Register</a>
-    <a href="/login" class="btn btn-success btn-lg">Login</a>
+    <a href="/login" class="ui button green large"><i class="ui icon sign in"></i>Login</a>
   {% endif %}
 </div>
-  <h1>About the App</h1>
-  <p>The app has been created as a front end to the meta data used by the Medcial Data Hub</p>
-  <p>Apply for access to data sources via the data source tab.</p>
-  <p>You must be logged in to access the data sources Read & Unsderstand documnets.</p>
+  <h1 class="ui header large">About the App</h1>
+  <div class="ui header">
+    <p>This application has been created as a front end to the meta data used by the Data Access &amp; Curation group</p>
+    <p>For an End-user to access a Data Source, and Read&understand must be completed.
+       <ui>
+         <li>You must be <a href="{{url_for('login')}}">logged in</a> to access the data sources' Read & Understand documents.</li>
+         <li>Please use the <a href="{{url_for('login')}}">RU Data Sources Menu item </a> to access the list of available data sources.</li>
+       </ui>
+    <div class="ui segment basic">
+      <p>Any comments, issues or errors then please contact the <a href="mailto:mdh-d@gene.com?Subject=About%20the%20RandU%20Application" target="_top">DAC team.</p>
+    </div>
+  </div>
 
 {% endblock %}
