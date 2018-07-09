@@ -22,30 +22,43 @@ print('-------FLASK INFO--------')
 # udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="INFO",logConsole=False,configureLogging=False)
 # tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_ldap)");
 
-tdUser = os.environ.get('REST_USER', 'hibellm')
-tdPassword = os.environ.get('REST_PASSWORD', '$$tdwallet(pw_tera)')
-restServer = "{0}:{1}/{2}".format(os.environ.get('REST_HOST', 'rkaustms02.kau.roche.com'), os.environ.get('REST_PORT', '1080'),os.environ.get('REST_PATH','tdrest/systems/rochetd'))
+# tdUser = os.environ.get('REST_USER', 'hibellm')
+# tdPassword = os.environ.get('REST_PASSWORD', '$$tdwallet(pw_tera)')
+# restServer = "{0}:{1}/{2}".format(os.environ.get('REST_HOST', 'rkaustms02.kau.roche.com'), os.environ.get('REST_PORT', '1080'),os.environ.get('REST_PATH','tdrest/systems/rochetd'))
 
-sql="SELECT TRIM(DatabaseName) AS \"Database\", PermSpace  AS \"Size\" FROM dbc.databases where databasename like 'RWD_VDM%' ORDER BY 2 DESC;";
-rformat="CSV";
+# sql="SELECT TRIM(DatabaseName) AS \"Database\", PermSpace  AS \"Size\" FROM dbc.databases where databasename like 'RWD_VDM%' ORDER BY 2 DESC;";
+# rformat="CSV";
 
 
-response = requests.get(('http://{}/queries?'+sql+rformat).format(restServer),
-auth=HTTPBasicAuth(tdUser, tdPassword),
-headers={'content-type': 'application/json','Accept': 'application/vnd.com.teradata.rest-v1.0+json, */*; q=0.01'})
+# response = requests.get(('http://{}/queries?'+sql+rformat).format(restServer),
+# auth=HTTPBasicAuth(tdUser, tdPassword),
+# headers={'content-type': 'application/json','Accept': 'application/vnd.com.teradata.rest-v1.0+json, */*; q=0.01'})
 
-print(('http://{}/queries?'+sql).format(restServer))
+# print(('http://{}/queries?'+sql).format(restServer))
+
 # WORKING
 # response = requests.get('http://{}/tdrest/systems/rochetd/databases'.format(restServer),
 # auth=HTTPBasicAuth(tdUser, tdPassword),
 # headers={'content-type': 'application/json','Accept': 'application/vnd.com.teradata.rest-v1.0+json, */*; q=0.01'})
 
-print('result is:'+response.text)
-print("status: {0}".format(response.status_code))
+
+from PythonTeradata import PythonTeradata
+
+pwd_file = os.path.join(os.path.expanduser('~'), '.pwd', 'hibellm_pwd')
+
+tdRWDS = PythonTeradata()
+tdRWDS.connect(pwd_file=pwd_file, dsn="EU")
+
+
+sql="SELECT USER"
+results,columns = tdRWDS.query_get_raw_results(sql)
+print('Logged in as : '+str(results))
 
 print('--------FLASK INFO---------')
 print('CONNECTION TO TERADATA MADE')
 print('--------FLASK INFO---------')
+
+
 
 # Index
 @app.route('/')
@@ -82,8 +95,11 @@ def register():
         userpw   = sha256_crypt.encrypt(str(form.userpw.data))
 
         # ENTER THE DATA INTO A USER TABLE
-        for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
-            print('Entered the user:'+userid+' into the database')
+        # for row in tdcon.execute("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw)):
+        #     print('Entered the user:'+userid+' into the database')
+
+        df = tdRWDS.insert_or_update("INSERT into datahub_hibellm.ru_userlist(userid, username, email, userpw) VALUES(?,?,?,?)", (userid, username, email, userpw))
+        print('Entered the user:'+userid+' into the database')
 
         flash('You are now registered and can log in', 'success')
 
@@ -99,11 +115,15 @@ def login():
         password_candidate = request.form['userpw']
 
         # Get user by userid
-        for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
-            # print(row)
-            # print(row[3])
-            result=row
+        # for row in tdcon.execute("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid]):
+        #     # print(row)
+        #     # print(row[3])
+        #     result=row
         # print(dir(result))
+
+        sql=("SELECT * FROM datahub_hibellm.ru_userlist WHERE userid = ?", [userid])
+        result,columns = tdRWDS.query_get_raw_results(sql)
+
 
         if len(result) > 0:
             # Get stored hash
@@ -159,10 +179,16 @@ def ru_datasource():
     form = rudatasourceForm(request.form)
 
     # Get list of RU
-    cur=tdcon.execute("select a.dbid,a.dbshortcode,pdflink,approval,userid,requestdate,requested,granteddate,granted "+
+    # cur=tdcon.execute("select a.dbid,a.dbshortcode,pdflink,approval,userid,requestdate,requested,granteddate,granted "+
+    #                   "from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a "+
+    #                   "left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode;")
+    # datasource= cur.fetchall()
+
+    sql=("select a.dbid,a.dbshortcode,pdflink,approval,userid,requestdate,requested,granteddate,granted "+
                       "from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a "+
                       "left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode;")
-    datasource= cur.fetchall()
+    datasource,columns = tdRWDS.query_get_raw_results(sql)
+
 
     # Get datasourcelist
     if len(datasource) > 0:

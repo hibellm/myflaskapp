@@ -1,20 +1,35 @@
 # https://developer.teradata.com/tools/reference/teradata-python-module
 
-import teradata
+# import teradata
 
-udaExec = teradata.UdaExec (appName="HelloWorld", version="1.0",logConsole=True)
-session = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
+# udaExec = teradata.UdaExec (appName="HelloWorld", version="1.0",logConsole=True)
+# session = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_tera)");
 
-# for row in session.execute("SELECT rolename from Datahub_public.myroles"):
-#     print('This is a rolename :', row)
+# # for row in session.execute("SELECT rolename from Datahub_public.myroles"):
+# #     print('This is a rolename :', row)
 
 
 userid=('hibellm')
 dbshortcode=('CPRD')
 
-#WORKS WHEN YOU HAVE ONE VALUE ONLY
-for row in session.execute("INSERT into datahub_hibellm.flasktest VALUES(?,?)",(userid,dbshortcode)):
-    print('This has been inserted :', row)
+# #WORKS WHEN YOU HAVE ONE VALUE ONLY
+# for row in session.execute("INSERT into datahub_hibellm.flasktest VALUES(?,?)",(userid,dbshortcode)):
+#     print('This has been inserted :', row)
+
+import os
+from PythonTeradata import PythonTeradata
+
+pwd_file = os.path.join(os.path.expanduser('~'), '.pwd', 'hibellm_pwd')
+tdRWDS = PythonTeradata()
+tdRWDS.connect(pwd_file=pwd_file, dsn="EU")
+
+
+sql=("INSERT into datahub_hibellm.flasktest VALUES(%s,%s)" % userid, dbshortcode)
+print(sql)
+results,columns = tdRWDS.insert_or_update(sql)
+
+
+
 
 # userid=('hibellm','mrmagoo','Batman')
 # dbshortcode=('CPRD','ABC','XYZ')

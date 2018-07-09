@@ -11,7 +11,7 @@ import logging
 # from logging import Formatter
 # from werkzeug.exceptions import HTTPException
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
 #ERROR Handling
 @app.errorhandler(404)
@@ -208,4 +208,4 @@ def logrequest(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run('0.0.0.0', 5003, debug=False)
+    app.run('0.0.0.0', 5003, debug=True)
