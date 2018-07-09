@@ -8,7 +8,7 @@ from datetime import datetime, date, time
 import teradata
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
 print('-------FLASK INFO--------')
 print('STARTING THE FLASK APP...')
