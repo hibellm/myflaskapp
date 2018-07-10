@@ -1,20 +1,15 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-<<<<<<< Updated upstream
       <div class="alert alert-{{ category }} ">
         <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
         <h3 class="ui header large center aligned ">{{ message }}</h3>
       </div>
-=======
-      <div class="ui message {{ category }}"><i class="close icon"></i>{{ message }}</div>
->>>>>>> Stashed changes
     {% endfor %}
   {% endif %}
 {% endwith %}
 
 {% if error %}
-<<<<<<< Updated upstream
   <div class="alert alert-danger">
     <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
     <h3 class="ui header large center aligned ">{{ error }}</h3>
@@ -26,11 +21,4 @@
     <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
     <h3 class="ui header large center aligned ">{{ msg }}</h3>
   </div>
-=======
-  <div class="ui message error"><i class="close icon"></i>{{error}}</div>
-{% endif %}
-
-{% if msg %}
-  <div class="ui message success"><i class="close icon"></i>{{msg}}</div>
->>>>>>> Stashed changes
 {% endif %}

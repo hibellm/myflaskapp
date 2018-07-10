@@ -22,15 +22,16 @@ print('-------FLASK INFO--------')
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'myflaskapp'
+app.config['MYSQL_DB'] = 'datahub_hibellm'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # init MYSQL
 mysql = MySQL(app)
 
-result = cur.execute("SELECT USER")
-loggedin = cur.fetchall()
-print('Logged in as : '+str(loggedin))
+# cur = mysql.connection.cursor()
+# result = cur.execute("SELECT USER")
+# loggedin = cur.fetchall()
+# print('Logged in as : '+str(loggedin))
 
 print('--------FLASK INFO---------')
 print('CONNECTION TO MYSQL MADE   ')
@@ -407,4 +408,4 @@ def request_access(id):
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run(5003,debug=True)
+    app.run(port=5003,debug=True)
