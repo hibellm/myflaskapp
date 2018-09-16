@@ -1,7 +1,7 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
-      <div class="alert alert-{{ category }} ">
+      <div class="ui message {{ category }} ">
         <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
         <h3 class="ui header large center aligned ">{{ message }}</h3>
       </div>
@@ -10,14 +10,14 @@
 {% endwith %}
 
 {% if error %}
-  <div class="alert alert-danger">
+  <div class="ui message error">
     <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
     <h3 class="ui header large center aligned ">{{ error }}</h3>
   </div>
 {% endif %}
 
 {% if msg %}
-  <div class="alert alert-success">
+  <div class="ui message success">
     <button class="ui button icon right floated compact" onclick=($('.ui.modal').modal('hide'))><i class="ui icon close"></i></button>
     <h3 class="ui header large center aligned ">{{ msg }}</h3>
   </div>

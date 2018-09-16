@@ -21,4 +21,12 @@
       </div>
     </div>
   </div>
+  {#
+  {% from "includes/_formhelpers.html" import render_field %}
+  <form class="ui form" method="POST" action="">
+    <div class="field">{{render_field(request.form.userid, class_="form-control")}}</div>
+    <div class="field">{{render_field(request.form.userpw, class_="form-control")}}</div>        
+    <button class="ui button blue" type="submit">Submit</button>
+  </form>
+ #}
 {% endblock %}

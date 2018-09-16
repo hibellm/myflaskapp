@@ -54,10 +54,10 @@ def about():
 #LOGIN/REGISTER FUNCTIONS
 # Register Form Class
 class RegisterForm(Form):
-    userid = StringField('Name', [validators.Length(min=1, max=10)])
-    email = StringField('Email', [validators.Length(min=6, max=50)])
+    userid   = StringField('User ID', [validators.Length(min=1, max=10)])
+    email    = StringField('Email', [validators.Length(min=6, max=50)])
     username = StringField('Username', [validators.Length(min=4, max=25)])
-    userpw = PasswordField('Password', [
+    userpw   = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
@@ -68,14 +68,14 @@ class RegisterForm(Form):
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
-        userid = form.userid.data
-        email = form.email.data
+        userid   = form.userid.data
+        email    = form.email.data
         username = form.username.data
-        userpw = sha256_crypt.encrypt(str(form.userpw.data))
+        userpw   = sha256_crypt.encrypt(str(form.userpw.data))
 
         # Create cursor
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO ru_userlist(userid, username, email, password) VALUES(%s, %s, %s, %s)", (userid, username, email, userpw))
+        cur.execute("INSERT INTO ru_userlist(userid, username, email, userpw) VALUES(%s, %s, %s, %s)", (userid, username, email, userpw))
         mysql.connection.commit()
         cur.close()
         print('Entered the user:'+userid+' into the database')

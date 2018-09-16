@@ -4,34 +4,14 @@
   <h1>Register</h1>
 
   {% from "includes/_formhelpers.html" import render_field %}
-<<<<<<< Updated upstream
-  <form method="POST" action="">
-    <div class="form-group">
-      {{render_field(form.userid, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.email, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.username, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.userpw, class_="form-control")}}
-    </div>
-    <div class="form-group">
-      {{render_field(form.confirm, class_="form-control")}}
-    </div>
-    <p><input type="submit" class="ui button blue inverted" value="Submit"></p>
-=======
  
   <form class="ui form" method="POST" action="">
-    <div class="field">{{render_field(form.name, class_="form-control")}}</div>
+    <div class="field">{{render_field(form.userid, class_="form-control")}}</div>
     <div class="field">{{render_field(form.email, class_="form-control")}}</div>
     <div class="field">{{render_field(form.username, class_="form-control")}}</div>
-    <div class="field">{{render_field(form.password, class_="form-control")}}</div>        
+    <div class="field">{{render_field(form.userpw, class_="form-control")}}</div>        
     <div class="field">{{render_field(form.confirm, class_="form-control")}}</div>
     <button class="ui button blue" type="submit">Submit</button>
->>>>>>> Stashed changes
   </form>
 
 {% endblock %}
