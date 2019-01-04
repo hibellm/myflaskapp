@@ -260,9 +260,10 @@ def ru_datasource():
     # Get datasourcelist
     # result = cur.execute("SELECT id,dbshortcode,pdfcode,create_date FROM datasourcelist")
     datasource = cur.fetchall()
+    print(str(datasource))
 
-    if result > 0:
-        return render_template('ru_datasource.html', datasource=datasource,form=form)
+    if result > 0:#SEEMS to only work when I name the vars as a dictionary and not a list I guess
+        return render_template('ru_datasource_wip.html', datasource=datasource,form=form)
     else:
         msg = 'No R&amp;U Found...strange'
         return render_template('ru_datasource.html', msg=msg ,form=form)

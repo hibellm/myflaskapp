@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+    {% for ds in datasource %}
+
+
+    ds0 is 
+
+{{ds[0]}}
+
+{{ds['id']}}
+{{ds['dbshortcode']}}
+{{ds[2]}}
+
+
+    {% endfor %}
+  
+
+  <div class="ui basic modal" id="mod1">
+    <div class="content">
+      <div class="description">
+          {% include 'includes/_messages.html' %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
