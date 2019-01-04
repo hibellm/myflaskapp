@@ -28,6 +28,14 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 
+# DATSOURCES     - 
+# DATASOURCELIST - 
+# RU_LIST        -
+# RU_REGISTRY    -
+# RU_USERLIST    - Hold the list of registered users
+# USERS          - 
+
+
 # cur = mysql.connection.cursor()
 # result = cur.execute("SELECT USER")
 # loggedin = cur.fetchall()
@@ -97,7 +105,7 @@ def login():
         cur = mysql.connection.cursor()
         # Get user by username
         result = cur.execute("SELECT * FROM ru_userlist WHERE userid = %s", [userid])
-
+        
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
