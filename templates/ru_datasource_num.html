@@ -19,42 +19,42 @@
       <th>Status</th>
     </thead>
     {% for ds in datasource %}
-      {% if ds['granted']==1 %}
-        <tr class="positive">{{ds['dbshortcode']}}
-      {% elif ds['request']==1 %}
-        <tr class="warning">{{ds['dbshortcode']}}
+      {% if ds[8]==1 %}
+        <tr class="positive">{{ds[1]}}
+      {% elif ds[6]==1 %}
+        <tr class="warning">{{ds[1]}}
       {% else %}
-        <tr>{{ds['dbshortcode']}}
+        <tr>{{ds[1]}}
       {% endif %}
-        {% if ds['granted']==1 %}
+        {% if ds[8]==1 %}
           <td><a href="/request_access/{{ds[0]}}" title="Already granted!"><i class="ui icon file pdf outline large red"></i></a></td>
-          <td>{{ds['dbshortcode']}}</td>
+          <td>{{ds[1]}}</td>
           <td><i class="ui icon green unlock large"></i></td>
-        {% elif ds['request']==1 %}
+        {% elif ds[6]==1 %}
           <td><a href="/request_access/{{ds[0]}}" title="Already requested!"><i class="ui icon file pdf outline large red"></i></a></td>
-          <td>{{ds['dbshortcode']}}</td>
+          <td>{{ds[1]}}</td>
           <td><i class="ui icon red lock alternative large"></i></td>
         {% else %}
           <td><a href="/request_access/{{ds[0]}}" title="View the PDF!"><i class="ui icon file pdf outline large red"></i></a></td>
-          <td>{{ds['dbshortcode']}}</td>
+          <td>{{ds[1]}}</td>
           <td><i class="ui icon red lock alternative large"></i></td>
         {% endif %}
         {# REQUEST DATE #}
-        {% if ds['requestdate'] == None %}
-          <td>{{ds['requestdate']}}</td>
+        {% if ds[4] == None %}
+          <td>{{ds[4]}}</td>
         {% else %}
-          <td>{{ds['requestdate'].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+          <td>{{ds[4].strftime('%Y-%m-%d %H:%M:%S')}}</td>
         {% endif %}
         {# GRANT DATE #}
-        {% if ds['granted']==1 %}
+        {% if ds[8]==1 %}
           <td>Granted on
-            {% if ds['granteddate'] == None %}
+            {% if ds[7] == None %}
               <i>unknown date</i>
             {% else %}
-              {{ds['granteddate'].strftime('%Y-%m-%d %H:%M:%S')}}
+              {{ds[7].strftime('%Y-%m-%d %H:%M:%S')}}
             {% endif %}
           </td>
-        {% elif ds['request']==1 %}
+        {% elif ds[6]==1 %}
           <td>Pending</td>
         {% else %}
           <td>-</td>

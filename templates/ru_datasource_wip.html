@@ -3,16 +3,18 @@
 {% block body %}
 
     {% for ds in datasource %}
-
-
-    ds0 is 
-
-{{ds[0]}}
-
+      {{ds[0]}} <br>
+this
 {{ds['id']}}
 {{ds['dbshortcode']}}
-{{ds[2]}}
-
+{{ds['pdfcode']}}
+{{ds['create_date']}}
+{{ds['userid']}}
+{{ds['b.dbshortcode']}}
+{{ds['request']}}
+{{ds['requestdate']}}
+{{ds['granted']}}
+{{ds['granteddate']}}
 
     {% endfor %}
   

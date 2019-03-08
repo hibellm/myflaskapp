@@ -160,10 +160,10 @@ def ru_datasource():
 
     # Get datasourcelist
     if len(datasource) > 0:
-        return render_template('ru_datasource.html', form=form, datasource=datasource)
+        return render_template('ru_datasource_num.html', form=form, datasource=datasource)
     else:
         msg = 'No R&amp;U Found...strange'
-        return render_template('ru_datasource.html', msg=msg, form=form)
+        return render_template('ru_datasource_num.html', msg=msg, form=form)
 
 # Log a Request for access
 @app.route('/request_access/<string:id>', methods=['GET', 'POST'])
