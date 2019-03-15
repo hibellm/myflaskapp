@@ -35,7 +35,7 @@ def internal_server_error(error):
             from logging.handlers import SMTPHandler
             from logging import Formatter
 
-            mail_handler = SMTPHandler(monitor,'marcus.hibell@roche.com',admins,'The R&U Application Failed - check why')
+            mail_handler = SMTPHandler(monitor,'<myemail>',admins,'The R&U Application Failed - check why')
             mail_handler.setLevel(logging.ERROR)
             mail_handler.setFormatter(Formatter('''
             Message type:       %(levelname)s
@@ -58,7 +58,7 @@ print('-------FLASK INFO--------')
 #TERADATA CONNECTION INFOMATION - ALSO USES UDAEXEC.INI FILE IN HOME DIRECTORY
 udaExec = teradata.UdaExec (appName="RU Flaskapp", version="1.0",logRetention=1,logLevel="DEBUG",logConsole=False,configureLogging=False)
 #USED TO WRITE TO THE TABLES
-tdcon = udaExec.connect(method="odbc", system="rochetd",username="hibellm", password="$$tdwallet(pw_ldap)", authentication="LDAP");
+tdcon = udaExec.connect(method="odbc", system="xxxx",username="xxxx", password="$$tdwallet(pw_ldap)", authentication="LDAP");
 
 print('--------FLASK INFO---------')
 print('CONNECTION TO TERADATA MADE')
@@ -92,7 +92,7 @@ def login():
         password_candidate = request.form['userpw']
         #print(password_candidate)
         try:
-            utdcon = udaExec.connect(method="odbc", system="rochetd",username=userid, password=password_candidate, authentication="LDAP");
+            utdcon = udaExec.connect(method="odbc", system="xxx",username=userid, password=password_candidate, authentication="LDAP");
         except Exception as e:
             print ("Error connecting to Teradata : ${dataSourceName}")
             raise e
@@ -154,8 +154,8 @@ def ru_datasource():
 
     # Get list of RU
     cur = tdcon.execute("select a.dbid,a.dbshortcode,pdflink,approval,userid,requestdate,requested,granteddate,granted "+
-                        "from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_hibellm.ru_list) as a "+
-                        "left join (SELECT * FROM datahub_hibellm.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode")
+                        "from (SELECT dbid,dbshortcode,pdflink,approval FROM datahub_xxx.ru_list) as a "+
+                        "left join (SELECT * FROM datahub_xxx.ru_registry where userid='"+session['userid']+"') as b on a.dbshortcode=b.dbshortcode")
     datasource = cur.fetchall()
 
     # Get datasourcelist
@@ -170,7 +170,7 @@ def ru_datasource():
 @is_logged_in
 def logrequest(id):
     # CHECK IF ALREADY APPPLIED?
-    tst = tdcon.execute("SELECT '1' FROM datahub_hibellm.ru_registry WHERE dbid = ? and userid = ?", (id,session['userid']) )
+    tst = tdcon.execute("SELECT '1' FROM datahub_xxx.ru_registry WHERE dbid = ? and userid = ?", (id,session['userid']) )
     mjh = str(tst.fetchall())
     # print('mjh type is',type(mjh))
     # print('length of mjh is :',len(mjh))
@@ -181,8 +181,8 @@ def logrequest(id):
     else:
         print('Data Source not yet requested so continuing')
 
-        # cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid= ?", (id))
-        cur=tdcon.execute("SELECT * FROM datahub_hibellm.ru_list WHERE dbid='"+id+"'")
+        # cur=tdcon.execute("SELECT * FROM datahub_xxx.ru_list WHERE dbid= ?", (id))
+        cur=tdcon.execute("SELECT * FROM datahub_xxx.ru_list WHERE dbid='"+id+"'")
         logrequest = cur.fetchall()
 
         form = rudatasourceForm(request.form)
@@ -196,7 +196,7 @@ def logrequest(id):
             # Check if agree ticked
             if agree == 1:
                 print('The user agreed to datasource :'+ dbshortcode)
-                cur=tdcon.execute("INSERT INTO datahub_hibellm.ru_registry(userid,dbid,dbshortcode,requestdate,requested) VALUES(?,?,?,?,?)",(session['userid'],dbid,dbshortcode,dttime,int(agree)))
+                cur=tdcon.execute("INSERT INTO datahub_xxx.ru_registry(userid,dbid,dbshortcode,requestdate,requested) VALUES(?,?,?,?,?)",(session['userid'],dbid,dbshortcode,dttime,int(agree)))
 
                 flash('DataSource ' + dbshortcode +' Access requested', 'success')
                 return redirect(url_for('ru_datasource'))
