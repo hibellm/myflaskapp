@@ -22,7 +22,7 @@ print('-------FLASK INFO--------')
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'datahub_hibellm'
+app.config['MYSQL_DB'] = 'datahub_xxx'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # init MYSQL
@@ -259,10 +259,10 @@ def ru_datasource():
 
     # Get status list of RU
     # result=cur.execute("SELECT * FROM ru_registry where userid=%s ", (session['username']) )
-    # cur.execute("SELECT * FROM ru_registry where userid='hibellm' ")
+    # cur.execute("SELECT * FROM ru_registry where userid='xxx' ")
     # ru_status = cur.fetchall()
 
-    result = cur.execute("select * from (SELECT id,dbshortcode,pdfcode,create_date FROM myflaskapp.datasourcelist) as a left join (SELECT * FROM myflaskapp.ru_registry where userid='hibellm') as b on a.dbshortcode=b.dbshortcode;")
+    result = cur.execute("select * from (SELECT id,dbshortcode,pdfcode,create_date FROM myflaskapp.datasourcelist) as a left join (SELECT * FROM myflaskapp.ru_registry where userid='xxx') as b on a.dbshortcode=b.dbshortcode;")
 
 
     # Get datasourcelist
